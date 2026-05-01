@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { allCategories } from "../constants/categories";
-import { objectIdSchema } from "./finance";
+import { allCategories } from "../constants/categories.js";
+import { objectIdSchema } from "./finance.js";
 
 export const transactionTypeSchema = z.enum(["income", "expense"]);
 
