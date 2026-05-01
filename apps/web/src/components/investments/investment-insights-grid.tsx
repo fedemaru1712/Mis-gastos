@@ -1,0 +1,54 @@
+import type { InvestmentPosition } from "@personal-finance/shared";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+function insightLabel(month?: string) {
+  return month ? month : "Sin datos";
+}
+
+export function InvestmentInsightsGrid({
+  entries,
+  totalContributed,
+}: {
+  entries: InvestmentPosition["monthlyEntries"];
+  totalContributed: number;
+}) {
+  const average =
+    entries.length > 0 ? entries.reduce((sum, entry) => sum + entry.profitabilityPercentage, 0) / entries.length : 0;
+  const best = [...entries].sort((left, right) => right.profitabilityPercentage - left.profitabilityPercentage)[0];
+  const worst = [...entries].sort((left, right) => left.profitabilityPercentage - right.profitabilityPercentage)[0];
+
+  const cards = [
+    {
+      label: "Mejor mes",
+      value: `${best?.profitabilityPercentage.toFixed(2) ?? "0.00"}%`,
+      helper: insightLabel(best?.month),
+    },
+    {
+      label: "Peor mes",
+      value: `${worst?.profitabilityPercentage.toFixed(2) ?? "0.00"}%`,
+      helper: insightLabel(worst?.month),
+    },
+    { label: "Media mensual", value: `${average.toFixed(2)}%`, helper: `${entries.length} meses analizados` },
+    {
+      label: "Total aportado",
+      value: `${new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(totalContributed)}`,
+      helper: "Capital acumulado",
+    },
+  ];
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {cards.map((card) => (
+        <Card key={card.label} className="border-border/80 bg-card/95">
+          <CardHeader>
+            <CardTitle className="text-sm text-muted-foreground">{card.label}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-semibold">{card.value}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{card.helper}</p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}

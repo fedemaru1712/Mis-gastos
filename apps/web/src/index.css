@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 222 47% 7%;
+  --foreground: 210 40% 96%;
+  --card: 222 33% 10%;
+  --card-foreground: 210 40% 96%;
+  --primary: 187 92% 42%;
+  --primary-foreground: 222 47% 11%;
+  --secondary: 217 24% 15%;
+  --secondary-foreground: 210 40% 96%;
+  --muted: 217 24% 14%;
+  --muted-foreground: 215 20% 72%;
+  --accent: 217 28% 18%;
+  --accent-foreground: 210 40% 96%;
+  --border: 217 19% 20%;
+  --input: 217 19% 20%;
+  --ring: 187 92% 42%;
+  --success: 147 62% 44%;
+  --warning: 40 94% 53%;
+  --danger: 0 84% 60%;
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: Manrope, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-image:
+      radial-gradient(circle at top left, rgba(56, 189, 248, 0.1), transparent 24%),
+      radial-gradient(circle at top right, rgba(99, 102, 241, 0.12), transparent 20%),
+      linear-gradient(180deg, rgba(15, 23, 42, 0.5), rgba(2, 6, 23, 0.95));
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    margin: 0;
+  }
+}
