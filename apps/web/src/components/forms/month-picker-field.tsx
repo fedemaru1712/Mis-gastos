@@ -45,7 +45,7 @@ export function MonthPickerField({ className, value, onChange, allowClear = fals
           type="button"
           variant="outline"
           className={cn(
-            "h-10 w-full justify-between rounded-md border-input bg-background/60 px-3 text-left font-normal hover:bg-background/80",
+            "h-10 w-full justify-between rounded-md border-input bg-background/60 px-3 text-left text-base font-normal hover:bg-background/80 md:text-sm",
             !selectedDate && "text-muted-foreground",
             className,
           )}
