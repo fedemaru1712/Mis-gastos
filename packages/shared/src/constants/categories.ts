@@ -16,6 +16,7 @@ export const expenseCategories = [
   "Cuidado personal",
   "Tecnología",
   "Finanzas",
+  "Préstamos",
   "Otros",
 ] as const;
 

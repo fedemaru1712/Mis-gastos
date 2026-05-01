@@ -11,6 +11,11 @@ import { transactionRouter } from "./routes/transaction.routes.js";
 export const app = express();
 
 const allowedOrigins = new Set([env.CLIENT_URL, ...env.CLIENT_URLS].map((value) => value.replace(/\/$/, "")));
+const allowedOriginPatterns = env.CLIENT_URL_PATTERNS.map((pattern) => {
+  const escapedPattern = pattern.replace(/[|\\{}()[\]^$+?.]/g, "\\$&").replace(/\*/g, ".*");
+
+  return new RegExp(`^${escapedPattern}$`);
+});
 
 app.use(
   cors({
@@ -21,7 +26,9 @@ app.use(
       }
 
       const normalizedOrigin = origin.replace(/\/$/, "");
-      if (allowedOrigins.has(normalizedOrigin)) {
+      const matchesPattern = allowedOriginPatterns.some((pattern) => pattern.test(normalizedOrigin));
+
+      if (allowedOrigins.has(normalizedOrigin) || matchesPattern) {
         callback(null, true);
         return;
       }
