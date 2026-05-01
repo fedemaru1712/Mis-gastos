@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -19,19 +19,10 @@ const monthLabels = Array.from({ length: 12 }, (_, index) => format(new Date(202
 
 export function MonthPickerField({ className, value, onChange, allowClear = false, year, onYearChange }: Props) {
   const [open, setOpen] = useState(false);
-  const selectedDate = value ? new Date(`${value}-01T00:00:00`) : undefined;
-  const [displayYear, setDisplayYear] = useState(() =>
-    Number(year ?? selectedDate?.getFullYear() ?? new Date().getFullYear()),
-  );
-
-  useEffect(() => {
-    if (year) {
-      setDisplayYear(Number(year));
-      return;
-    }
-
-    if (selectedDate) setDisplayYear(selectedDate.getFullYear());
-  }, [selectedDate, year]);
+  const selectedDate = useMemo(() => (value ? new Date(`${value}-01T00:00:00`) : undefined), [value]);
+  const selectedYear = selectedDate?.getFullYear() ?? new Date().getFullYear();
+  const [internalDisplayYear, setInternalDisplayYear] = useState(() => Number(year ?? selectedYear));
+  const displayYear = year ? Number(year) : internalDisplayYear;
 
   const selectedMonth = selectedDate?.getMonth();
   const displayLabel = useMemo(() => {
@@ -40,7 +31,15 @@ export function MonthPickerField({ className, value, onChange, allowClear = fals
   }, [selectedDate]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (nextOpen && !year) {
+          setInternalDisplayYear(selectedYear);
+        }
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           type="button"
@@ -65,7 +64,9 @@ export function MonthPickerField({ className, value, onChange, allowClear = fals
               className="h-8 w-8"
               onClick={() => {
                 const nextYear = displayYear - 1;
-                setDisplayYear(nextYear);
+                if (!year) {
+                  setInternalDisplayYear(nextYear);
+                }
                 onYearChange?.(String(nextYear));
               }}
             >
@@ -79,7 +80,9 @@ export function MonthPickerField({ className, value, onChange, allowClear = fals
               className="h-8 w-8"
               onClick={() => {
                 const nextYear = displayYear + 1;
-                setDisplayYear(nextYear);
+                if (!year) {
+                  setInternalDisplayYear(nextYear);
+                }
                 onYearChange?.(String(nextYear));
               }}
             >

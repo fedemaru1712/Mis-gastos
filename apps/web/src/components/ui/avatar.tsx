@@ -1,3 +1,4 @@
+import * as React from "react";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +11,12 @@ export function Avatar({ className, ...props }: AvatarPrimitive.AvatarProps) {
   );
 }
 
-export const AvatarImage = AvatarPrimitive.Image;
+export const AvatarImage = React.forwardRef<
+  React.ElementRef<typeof AvatarPrimitive.Image>,
+  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
+>((props, ref) => <AvatarPrimitive.Image ref={ref} {...props} />);
+
+AvatarImage.displayName = AvatarPrimitive.Image.displayName;
 
 export function AvatarFallback({ className, ...props }: AvatarPrimitive.AvatarFallbackProps) {
   return (

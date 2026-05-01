@@ -1,5 +1,5 @@
 import { BarChart3, ChevronLeft, ChevronRight, LineChart, LogOut, Settings, Wallet } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -15,12 +15,9 @@ const links = [
 
 export function PrivateLayout({ children }: { children: React.ReactNode }) {
   const { user, signOut } = useAuth();
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
-  useEffect(() => {
-    const storedValue = window.localStorage.getItem("finance-sidebar-collapsed");
-    setIsCollapsed(storedValue === "true");
-  }, []);
+  const [isCollapsed, setIsCollapsed] = useState(
+    () => window.localStorage.getItem("finance-sidebar-collapsed") === "true",
+  );
 
   function toggleSidebar() {
     setIsCollapsed((currentValue) => {

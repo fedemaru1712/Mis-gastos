@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getISODay } from "date-fns";
 import { es } from "date-fns/locale";
 import { DayPicker } from "react-day-picker";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 
 const weekdayLabels = ["lu", "ma", "mi", "ju", "vi", "sa", "do"];

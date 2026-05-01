@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import type { InvestmentPosition } from "@personal-finance/shared";
 import { MonthPickerField } from "@/components/forms/month-picker-field";
 import { Badge } from "@/components/ui/badge";
@@ -66,8 +66,11 @@ export function InvestmentMonthDialog({ open, investment, monthEntry, onOpenChan
     );
   }, [form, investment, monthEntry]);
 
-  const contribution = Number(form.watch("contribution") || 0);
-  const endOfMonthValue = Number(form.watch("endOfMonthValue") || 0);
+  const watchedMonth = useWatch({ control: form.control, name: "month" });
+  const watchedContribution = useWatch({ control: form.control, name: "contribution" });
+  const watchedEndOfMonthValue = useWatch({ control: form.control, name: "endOfMonthValue" });
+  const contribution = Number(watchedContribution || 0);
+  const endOfMonthValue = Number(watchedEndOfMonthValue || 0);
   const totalInvested = previousTotal + contribution;
   const result = endOfMonthValue - totalInvested;
   const percentage = totalInvested > 0 ? (result / totalInvested) * 100 : 0;
@@ -85,7 +88,7 @@ export function InvestmentMonthDialog({ open, investment, monthEntry, onOpenChan
           <div className="grid gap-4 sm:grid-cols-3">
             <label className="grid gap-2 text-sm">
               <span className="font-medium">Mes</span>
-              <MonthPickerField value={form.watch("month")} onChange={(value) => form.setValue("month", value)} />
+              <MonthPickerField value={watchedMonth} onChange={(value) => form.setValue("month", value)} />
             </label>
             <label className="grid gap-2 text-sm">
               <span className="font-medium">Aportación</span>

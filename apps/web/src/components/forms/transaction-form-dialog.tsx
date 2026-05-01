@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { expenseCategories, incomeCategories, transactionSchema, TransactionItem } from "@personal-finance/shared";
 import { Button } from "@/components/ui/button";
 import { DatePickerField } from "@/components/forms/date-picker-field";
@@ -30,8 +30,8 @@ export function TransactionFormDialog({ open, transaction, onOpenChange, onSubmi
     },
   });
 
-  const type = form.watch("type");
-  const selectedDate = form.watch("date");
+  const type = useWatch({ control: form.control, name: "type" });
+  const selectedDate = useWatch({ control: form.control, name: "date" });
   const categories = type === "income" ? incomeCategories : expenseCategories;
   const bankAccountsQuery = useQuery({ queryKey: ["bank-accounts"], queryFn: fetchBankAccounts });
 

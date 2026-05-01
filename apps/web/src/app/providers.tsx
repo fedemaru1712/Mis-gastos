@@ -1,7 +1,7 @@
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
-import { AuthProvider } from "@/hooks/use-auth";
+import { AuthProvider } from "@/hooks/auth-provider";
 import { env } from "@/lib/env";
 
 const queryClient = new QueryClient();

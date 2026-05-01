@@ -1,10 +1,25 @@
+import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export const Dialog = DialogPrimitive.Root;
-export const DialogTrigger = DialogPrimitive.Trigger;
-export const DialogClose = DialogPrimitive.Close;
+export function Dialog(props: DialogPrimitive.DialogProps) {
+  return <DialogPrimitive.Root {...props} />;
+}
+
+export const DialogTrigger = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Trigger>
+>((props, ref) => <DialogPrimitive.Trigger ref={ref} {...props} />);
+
+DialogTrigger.displayName = DialogPrimitive.Trigger.displayName;
+
+export const DialogClose = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Close>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close>
+>((props, ref) => <DialogPrimitive.Close ref={ref} {...props} />);
+
+DialogClose.displayName = DialogPrimitive.Close.displayName;
 
 export function DialogContent({ className, ...props }: DialogPrimitive.DialogContentProps) {
   return (

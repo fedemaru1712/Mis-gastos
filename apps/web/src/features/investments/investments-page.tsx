@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Plus, TrendingDown, TrendingUp } from "lucide-react";
 import { InvestmentPosition } from "@personal-finance/shared";
@@ -28,7 +28,10 @@ export function InvestmentsPage() {
   const [selectedMonth, setSelectedMonth] = useState<InvestmentPosition["monthlyEntries"][number] | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [period, setPeriod] = useState<"current" | "historical">("current");
-  const [yearFilter, setYearFilter] = useState("all");
+  const [yearSelection, setYearSelection] = useState<{ planId: string | null; year: string }>({
+    planId: null,
+    year: "all",
+  });
   const [order, setOrder] = useState<"desc" | "asc">("desc");
   const query = useQuery({ queryKey: ["investments"], queryFn: fetchInvestments });
   const mutation = useMutation({
@@ -68,29 +71,13 @@ export function InvestmentsPage() {
     onError: (error) => toast.error(error.message),
   });
 
-  useEffect(() => {
-    if (!query.data?.items.length) {
-      setActiveId(null);
-      return;
-    }
-
-    if (!activeId || !query.data.items.some((item) => item.id === activeId)) {
-      setActiveId(query.data.items[0].id);
-    }
-  }, [activeId, query.data?.items]);
-
-  const activePlan = useMemo(
-    () => query.data?.items.find((item) => item.id === activeId) ?? query.data?.items[0] ?? null,
-    [activeId, query.data?.items],
-  );
-
-  useEffect(() => {
-    if (!activePlan) return;
-    const latestYear = activePlan.monthlyEntries.at(-1)?.month.slice(0, 4) ?? "all";
-    setYearFilter(latestYear);
-  }, [activePlan?.id]);
+  const items = query.data?.items ?? [];
+  const resolvedActiveId = items.some((item) => item.id === activeId) ? activeId : (items[0]?.id ?? null);
+  const activePlan = items.find((item) => item.id === resolvedActiveId) ?? null;
 
   const allEntries = activePlan?.monthlyEntries ?? [];
+  const latestYear = allEntries.at(-1)?.month.slice(0, 4) ?? "all";
+  const yearFilter = yearSelection.planId === activePlan?.id ? yearSelection.year : latestYear;
   const latestEntry = allEntries.at(-1);
   const currentEntry = allEntries.find((entry) => entry.month === currentMonthKey()) ?? latestEntry;
   const summaryEntry = period === "current" ? currentEntry : latestEntry;
@@ -353,7 +340,7 @@ export function InvestmentsPage() {
             years={availableYears}
             year={yearFilter}
             order={order}
-            onYearChange={setYearFilter}
+            onYearChange={(value) => setYearSelection({ planId: activePlan.id, year: value })}
             onOrderChange={setOrder}
             onEditPlan={() => {
               setSelected(activePlan);
