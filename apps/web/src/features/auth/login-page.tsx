@@ -76,9 +76,6 @@ export function LoginPage() {
                   </div>
                 </div>
               </div>
-              <p className="text-center text-xs text-muted-foreground">
-                Solo podrás ver y modificar tus propios movimientos y resúmenes.
-              </p>
             </div>
           ) : (
             <p className="rounded-2xl bg-secondary p-4 text-sm text-muted-foreground">

@@ -10,9 +10,24 @@ import { transactionRouter } from "./routes/transaction.routes.js";
 
 export const app = express();
 
+const allowedOrigins = new Set([env.CLIENT_URL, ...env.CLIENT_URLS].map((value) => value.replace(/\/$/, "")));
+
 app.use(
   cors({
-    origin: env.CLIENT_URL,
+    origin(origin, callback) {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      const normalizedOrigin = origin.replace(/\/$/, "");
+      if (allowedOrigins.has(normalizedOrigin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
     credentials: true,
   }),
 );
