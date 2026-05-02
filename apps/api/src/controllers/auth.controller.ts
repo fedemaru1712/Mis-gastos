@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import { googleAuthSchema, UserProfile } from "@personal-finance/shared";
+import { env } from "../config/env.js";
 import { User } from "../models/User.js";
 import { requireAuth, AuthenticatedRequest } from "../middlewares/auth.middleware.js";
 import { verifyGoogleCredential } from "../services/googleAuth.service.js";
+import { HttpError } from "../utils/http-error.js";
 import { generateToken } from "../utils/generateToken.js";
 import { validateWithSchema } from "../utils/validators.js";
 
@@ -21,11 +23,24 @@ function mapUser(user: any): UserProfile {
 export async function loginWithGoogle(request: Request, response: Response) {
   const { credential } = validateWithSchema(googleAuthSchema, request.body);
   const profile = await verifyGoogleCredential(credential);
-  const user = await User.findOneAndUpdate({ googleId: profile.googleId }, profile, {
-    new: true,
-    upsert: true,
-    setDefaultsOnInsert: true,
-  });
+  const existingUser = await User.findOne({ googleId: profile.googleId });
+
+  if (existingUser) {
+    existingUser.email = profile.email;
+    existingUser.name = profile.name;
+    existingUser.avatarUrl = profile.avatarUrl;
+    await existingUser.save();
+
+    const token = generateToken({ sub: existingUser._id.toString(), email: existingUser.email });
+    return response.json({ token, user: mapUser(existingUser) });
+  }
+
+  const totalUsers = await User.countDocuments();
+  if (totalUsers >= env.MAX_USERS) {
+    throw new HttpError(403, "Se ha alcanzado el limite de usuarios permitidos en la app");
+  }
+
+  const user = await User.create(profile);
   const token = generateToken({ sub: user._id.toString(), email: user.email });
   return response.json({ token, user: mapUser(user) });
 }

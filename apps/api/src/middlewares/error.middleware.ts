@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { HttpError } from "../utils/http-error.js";
 import { ZodError } from "zod";
 
 export function errorMiddleware(error: unknown, _request: Request, response: Response, _next: NextFunction) {
@@ -7,6 +8,10 @@ export function errorMiddleware(error: unknown, _request: Request, response: Res
       message: "Validation error",
       issues: error.flatten(),
     });
+  }
+
+  if (error instanceof HttpError) {
+    return response.status(error.statusCode).json({ message: error.message });
   }
 
   if (error instanceof Error) {

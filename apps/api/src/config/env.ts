@@ -32,6 +32,7 @@ const allowedOriginPatterns = parseAllowedOriginPatterns();
 
 const envSchema = z.object({
   PORT: z.coerce.number().default(4000),
+  MAX_USERS: z.coerce.number().int().positive().default(5),
   MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 chars"),
   GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
