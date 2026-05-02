@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { bankAccountSchema } from "@personal-finance/shared";
+import { bankAccountSchema, objectIdSchema } from "@personal-finance/shared";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware.js";
 import { BankAccount } from "../models/BankAccount.js";
 import { validateWithSchema } from "../utils/validators.js";
@@ -17,6 +17,10 @@ function serialize(account: any) {
   };
 }
 
+function routeId(request: AuthenticatedRequest) {
+  return validateWithSchema(objectIdSchema, request.params.id);
+}
+
 export async function listBankAccounts(request: AuthenticatedRequest, response: Response) {
   const items = await BankAccount.find({ userId: request.auth?.userId }).sort({ bankName: 1, accountName: 1 });
   return response.json({ items: items.map(serialize) });
@@ -30,7 +34,7 @@ export async function createBankAccount(request: AuthenticatedRequest, response:
 
 export async function updateBankAccount(request: AuthenticatedRequest, response: Response) {
   const payload = validateWithSchema(bankAccountSchema, request.body);
-  const item = await BankAccount.findOneAndUpdate({ _id: request.params.id, userId: request.auth?.userId }, payload, {
+  const item = await BankAccount.findOneAndUpdate({ _id: routeId(request), userId: request.auth?.userId }, payload, {
     new: true,
   });
   if (!item) return response.status(404).json({ message: "Bank account not found" });
@@ -38,7 +42,7 @@ export async function updateBankAccount(request: AuthenticatedRequest, response:
 }
 
 export async function deleteBankAccount(request: AuthenticatedRequest, response: Response) {
-  const item = await BankAccount.findOneAndDelete({ _id: request.params.id, userId: request.auth?.userId });
+  const item = await BankAccount.findOneAndDelete({ _id: routeId(request), userId: request.auth?.userId });
   if (!item) return response.status(404).json({ message: "Bank account not found" });
   return response.status(204).send();
 }

@@ -9,7 +9,7 @@ export async function verifyGoogleCredential(credential: string) {
     audience: env.GOOGLE_CLIENT_ID,
   });
   const payload = ticket.getPayload();
-  if (!payload?.sub || !payload.email || !payload.name) {
+  if (!payload?.sub || !payload.email || !payload.name || payload.email_verified !== true) {
     throw new Error("Invalid Google token payload");
   }
 

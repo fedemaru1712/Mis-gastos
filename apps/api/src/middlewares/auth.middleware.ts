@@ -18,7 +18,17 @@ export function requireAuth(request: AuthenticatedRequest, response: Response, n
   }
 
   try {
-    const payload = jwt.verify(token, env.JWT_SECRET) as { sub: string; email: string };
+    const payload = jwt.verify(token, env.JWT_SECRET, { algorithms: ["HS256"] });
+
+    if (
+      typeof payload !== "object" ||
+      payload === null ||
+      typeof payload.sub !== "string" ||
+      typeof payload.email !== "string"
+    ) {
+      return response.status(401).json({ message: "Invalid token" });
+    }
+
     request.auth = { userId: payload.sub, email: payload.email };
     return next();
   } catch {

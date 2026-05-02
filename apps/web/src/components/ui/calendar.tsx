@@ -60,9 +60,9 @@ export function Calendar({
         formatWeekdayName: (date) => weekdayLabels[getISODay(date) - 1],
       }}
       components={{
-        DayButton: ({ type: _type, ...buttonProps }) => <button type="button" {...buttonProps} />,
-        NextMonthButton: ({ type: _type, ...buttonProps }) => <button type="button" {...buttonProps} />,
-        PreviousMonthButton: ({ type: _type, ...buttonProps }) => <button type="button" {...buttonProps} />,
+        DayButton: (buttonProps) => <button {...buttonProps} type="button" />,
+        NextMonthButton: (buttonProps) => <button {...buttonProps} type="button" />,
+        PreviousMonthButton: (buttonProps) => <button {...buttonProps} type="button" />,
         Chevron: ({ orientation, className: iconClassName, ...iconProps }) =>
           orientation === "left" ? (
             <ChevronLeft className={cn("h-4 w-4", iconClassName)} {...iconProps} />

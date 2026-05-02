@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { investmentSchema } from "@personal-finance/shared";
+import { investmentSchema, objectIdSchema } from "@personal-finance/shared";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware.js";
 import { Investment } from "../models/Investment.js";
 import { validateWithSchema } from "../utils/validators.js";
@@ -44,6 +44,10 @@ function serialize(investment: any) {
   };
 }
 
+function routeId(request: AuthenticatedRequest) {
+  return validateWithSchema(objectIdSchema, request.params.id);
+}
+
 export async function listInvestments(request: AuthenticatedRequest, response: Response) {
   const items = await Investment.find({ userId: request.auth?.userId }).sort({ updatedAt: -1, createdAt: -1 });
   return response.json({ items: items.map(serialize) });
@@ -67,7 +71,7 @@ export async function createInvestment(request: AuthenticatedRequest, response: 
 export async function updateInvestment(request: AuthenticatedRequest, response: Response) {
   const payload = validateWithSchema(investmentSchema, request.body);
   const item = await Investment.findOneAndUpdate(
-    { _id: request.params.id, userId: request.auth?.userId },
+    { _id: routeId(request), userId: request.auth?.userId },
     {
       ...payload,
       symbol: payload.symbol || undefined,
@@ -81,7 +85,7 @@ export async function updateInvestment(request: AuthenticatedRequest, response: 
 }
 
 export async function deleteInvestment(request: AuthenticatedRequest, response: Response) {
-  const item = await Investment.findOneAndDelete({ _id: request.params.id, userId: request.auth?.userId });
+  const item = await Investment.findOneAndDelete({ _id: routeId(request), userId: request.auth?.userId });
   if (!item) return response.status(404).json({ message: "Investment not found" });
   return response.status(204).send();
 }

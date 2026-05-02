@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { monthStringSchema } from "./auth.js";
 
 export const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i, "Invalid id");
 
@@ -17,7 +18,7 @@ export const bankAccountSchema = z.object({
 export const investmentTypeSchema = z.enum(["stock", "crypto", "fund", "etf", "bond", "other"]);
 
 export const investmentMonthlyEntrySchema = z.object({
-  month: z.string().regex(/^\d{4}-\d{2}$/, "Month must use YYYY-MM format"),
+  month: monthStringSchema,
   contribution: z.number().min(0, "Contribution must be greater than or equal to 0"),
   endOfMonthValue: z.number().min(0, "End of month value must be greater than or equal to 0"),
 });

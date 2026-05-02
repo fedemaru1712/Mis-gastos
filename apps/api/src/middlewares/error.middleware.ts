@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpError } from "../utils/http-error.js";
 import { ZodError } from "zod";
+import { env } from "../config/env.js";
 
 export function errorMiddleware(error: unknown, _request: Request, response: Response, _next: NextFunction) {
   if (error instanceof ZodError) {
@@ -15,7 +16,11 @@ export function errorMiddleware(error: unknown, _request: Request, response: Res
   }
 
   if (error instanceof Error) {
-    return response.status(500).json({ message: error.message });
+    if (env.NODE_ENV !== "production") {
+      return response.status(500).json({ message: error.message });
+    }
+
+    return response.status(500).json({ message: "Internal server error" });
   }
 
   return response.status(500).json({ message: "Unexpected error" });

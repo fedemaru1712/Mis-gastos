@@ -45,34 +45,35 @@ export function LoginPage() {
                 </div>
               )}
               {isReady && (
-                <div className="space-y-3 rounded-2xl bg-secondary/20 p-4">
+                <div className="space-y-4">
                   <div className="text-center">
                     <p className="text-sm font-semibold text-foreground">Continuar con Google</p>
                     <p className="text-xs text-muted-foreground">Acceso seguro a tu espacio personal</p>
                   </div>
                   <div className="flex justify-center">
-                    <GoogleLogin
-                      onSuccess={async (credentialResponse) => {
-                        if (!credentialResponse.credential) {
-                          toast.error("Google no devolvió una credencial válida");
-                          return;
-                        }
-                        try {
-                          await signInWithGoogle(credentialResponse.credential);
-                          toast.success("Sesión iniciada correctamente");
-                          navigate("/dashboard", { replace: true });
-                        } catch (error) {
-                          toast.error(error instanceof Error ? error.message : "No se pudo iniciar sesión");
-                        }
-                      }}
-                      onError={() => toast.error("Falló la autenticación con Google")}
-                      useOneTap
-                      theme="filled_black"
-                      text="signin_with"
-                      shape="pill"
-                      size="large"
-                      width="380"
-                    />
+                    <div className="w-full max-w-[380px] overflow-hidden rounded-full">
+                      <GoogleLogin
+                        onSuccess={async (credentialResponse) => {
+                          if (!credentialResponse.credential) {
+                            toast.error("Google no devolvió una credencial válida");
+                            return;
+                          }
+                          try {
+                            await signInWithGoogle(credentialResponse.credential);
+                            toast.success("Sesión iniciada correctamente");
+                            navigate("/dashboard", { replace: true });
+                          } catch (error) {
+                            toast.error(error instanceof Error ? error.message : "No se pudo iniciar sesión");
+                          }
+                        }}
+                        onError={() => toast.error("Falló la autenticación con Google")}
+                        theme="outline"
+                        text="continue_with"
+                        shape="pill"
+                        size="large"
+                        width="380"
+                      />
+                    </div>
                   </div>
                 </div>
               )}

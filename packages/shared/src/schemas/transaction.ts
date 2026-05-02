@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { allCategories } from "../constants/categories.js";
 import { objectIdSchema } from "./finance.js";
+import { monthStringSchema } from "./auth.js";
 
 export const transactionTypeSchema = z.enum(["income", "expense"]);
 
@@ -15,7 +16,9 @@ export const transactionSchema = z.object({
       message: "Category is not allowed",
     }),
   description: z.string().trim().max(160).optional().or(z.literal("")),
-  date: z.string().min(1, "Date is required"),
+  date: z.string().refine((value) => !Number.isNaN(Date.parse(value)), {
+    message: "Date must be valid",
+  }),
 });
 
 export const transactionFiltersSchema = z.object({
@@ -26,10 +29,7 @@ export const transactionFiltersSchema = z.object({
       message: "Category is not allowed",
     })
     .optional(),
-  month: z
-    .string()
-    .regex(/^\d{4}-\d{2}$/, "Month must use YYYY-MM format")
-    .optional(),
+  month: monthStringSchema.optional(),
 });
 
 export type TransactionInput = z.infer<typeof transactionSchema>;

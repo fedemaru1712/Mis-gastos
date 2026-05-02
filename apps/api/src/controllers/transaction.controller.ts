@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
-import { transactionFiltersSchema, transactionSchema } from "@personal-finance/shared";
+import { objectIdSchema, transactionFiltersSchema, transactionSchema } from "@personal-finance/shared";
 import { Types } from "mongoose";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware.js";
+import { BankAccount } from "../models/BankAccount.js";
 import { Transaction } from "../models/Transaction.js";
+import { HttpError } from "../utils/http-error.js";
 import { validateWithSchema } from "../utils/validators.js";
 
 function serialize(transaction: any) {
@@ -28,6 +30,19 @@ function monthRange(month?: string) {
   return { $gte: start, $lt: end };
 }
 
+function routeId(request: Request) {
+  return validateWithSchema(objectIdSchema, request.params.id);
+}
+
+async function assertBankAccountBelongsToUser(bankAccountId: string | undefined, userId: string | undefined) {
+  if (!bankAccountId) return;
+
+  const accountExists = await BankAccount.exists({ _id: bankAccountId, userId });
+  if (!accountExists) {
+    throw new HttpError(400, "Bank account is not valid for this user");
+  }
+}
+
 export async function listTransactions(request: AuthenticatedRequest, response: Response) {
   const filters = validateWithSchema(transactionFiltersSchema, request.query);
   const date = monthRange(filters.month);
@@ -44,6 +59,8 @@ export async function listTransactions(request: AuthenticatedRequest, response: 
 
 export async function createTransaction(request: AuthenticatedRequest, response: Response) {
   const payload = validateWithSchema(transactionSchema, request.body);
+  await assertBankAccountBelongsToUser(payload.bankAccountId || undefined, request.auth?.userId);
+
   const created = await Transaction.create({
     ...payload,
     bankAccountId: payload.bankAccountId || undefined,
@@ -55,7 +72,7 @@ export async function createTransaction(request: AuthenticatedRequest, response:
 }
 
 export async function getTransaction(request: AuthenticatedRequest, response: Response) {
-  const item = await Transaction.findOne({ _id: request.params.id, userId: request.auth?.userId });
+  const item = await Transaction.findOne({ _id: routeId(request), userId: request.auth?.userId });
   if (!item) {
     return response.status(404).json({ message: "Transaction not found" });
   }
@@ -64,8 +81,10 @@ export async function getTransaction(request: AuthenticatedRequest, response: Re
 
 export async function updateTransaction(request: AuthenticatedRequest, response: Response) {
   const payload = validateWithSchema(transactionSchema, request.body);
+  await assertBankAccountBelongsToUser(payload.bankAccountId || undefined, request.auth?.userId);
+
   const item = await Transaction.findOneAndUpdate(
-    { _id: request.params.id, userId: request.auth?.userId },
+    { _id: routeId(request), userId: request.auth?.userId },
     {
       ...payload,
       bankAccountId: payload.bankAccountId || undefined,
@@ -81,7 +100,7 @@ export async function updateTransaction(request: AuthenticatedRequest, response:
 }
 
 export async function deleteTransaction(request: AuthenticatedRequest, response: Response) {
-  const item = await Transaction.findOneAndDelete({ _id: request.params.id, userId: request.auth?.userId });
+  const item = await Transaction.findOneAndDelete({ _id: routeId(request), userId: request.auth?.userId });
   if (!item) {
     return response.status(404).json({ message: "Transaction not found" });
   }
