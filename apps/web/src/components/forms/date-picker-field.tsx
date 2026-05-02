@@ -16,7 +16,7 @@ export function DatePickerField({ className, value, onChange }: Props) {
   const selectedDate = value ? new Date(`${value}T00:00:00`) : undefined;
 
   return (
-    <Popover>
+    <Popover modal>
       <PopoverTrigger asChild>
         <Button
           type="button"
@@ -33,7 +33,7 @@ export function DatePickerField({ className, value, onChange }: Props) {
           <CalendarIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0" align="start">
+      <PopoverContent className="z-[60] p-0" align="start">
         <Calendar
           mode="single"
           selected={selectedDate}

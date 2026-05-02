@@ -10,6 +10,7 @@ function serialize(account: any) {
     userId: account.userId.toString(),
     bankName: account.bankName,
     accountName: account.accountName,
+    openingBalance: account.openingBalance,
     currency: account.currency,
     createdAt: account.createdAt.toISOString(),
     updatedAt: account.updatedAt.toISOString(),

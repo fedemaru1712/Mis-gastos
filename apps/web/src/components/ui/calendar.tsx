@@ -1,3 +1,4 @@
+import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getISODay } from "date-fns";
 import { es } from "date-fns/locale";
@@ -59,6 +60,9 @@ export function Calendar({
         formatWeekdayName: (date) => weekdayLabels[getISODay(date) - 1],
       }}
       components={{
+        DayButton: ({ type: _type, ...buttonProps }) => <button type="button" {...buttonProps} />,
+        NextMonthButton: ({ type: _type, ...buttonProps }) => <button type="button" {...buttonProps} />,
+        PreviousMonthButton: ({ type: _type, ...buttonProps }) => <button type="button" {...buttonProps} />,
         Chevron: ({ orientation, className: iconClassName, ...iconProps }) =>
           orientation === "left" ? (
             <ChevronLeft className={cn("h-4 w-4", iconClassName)} {...iconProps} />

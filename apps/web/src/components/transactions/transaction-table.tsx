@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { TransactionItem } from "@personal-finance/shared";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { fetchBankAccounts } from "@/services/bank-accounts";
+import { fetchTransactions } from "@/services/transactions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const formatter = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" });
@@ -19,6 +23,47 @@ interface Props {
 }
 
 export function TransactionTable({ items, onEdit, onDelete }: Props) {
+  const bankAccountsQuery = useQuery({ queryKey: ["bank-accounts"], queryFn: fetchBankAccounts });
+  const allTransactionsQuery = useQuery({
+    queryKey: ["transactions", "all-balances"],
+    queryFn: () => fetchTransactions({}),
+  });
+  const bankNames = useMemo(
+    () => new Map(bankAccountsQuery.data?.items.map((account) => [account.id, account.bankName]) ?? []),
+    [bankAccountsQuery.data?.items],
+  );
+  const runningBalances = useMemo(() => {
+    const openingBalances = new Map(
+      bankAccountsQuery.data?.items.map((account) => [account.id, account.openingBalance]) ?? [],
+    );
+    const orderedTransactions = [...(allTransactionsQuery.data?.items ?? [])].sort((left, right) => {
+      const byDate = new Date(left.date).getTime() - new Date(right.date).getTime();
+      if (byDate !== 0) return byDate;
+
+      const byCreatedAt = new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime();
+      if (byCreatedAt !== 0) return byCreatedAt;
+
+      return left.id.localeCompare(right.id);
+    });
+
+    const balances = new Map<string, number>();
+    const results = new Map<string, number>();
+
+    for (const transaction of orderedTransactions) {
+      if (!transaction.bankAccountId) continue;
+
+      const currentBalance =
+        balances.get(transaction.bankAccountId) ?? openingBalances.get(transaction.bankAccountId) ?? 0;
+      const nextBalance =
+        transaction.type === "income" ? currentBalance + transaction.amount : currentBalance - transaction.amount;
+
+      balances.set(transaction.bankAccountId, nextBalance);
+      results.set(transaction.id, nextBalance);
+    }
+
+    return results;
+  }, [allTransactionsQuery.data?.items, bankAccountsQuery.data?.items]);
+
   return (
     <>
       <div className="space-y-3 md:hidden">
@@ -28,7 +73,11 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
               <div className="min-w-0">
                 <p className="font-medium">{item.category}</p>
                 <p className="text-xs text-muted-foreground">{new Date(item.date).toLocaleDateString("es-ES")}</p>
-                {item.bankAccountId && <p className="text-xs text-muted-foreground">Cuenta vinculada</p>}
+                {item.bankAccountId && (
+                  <p className="text-xs text-muted-foreground">
+                    {bankNames.get(item.bankAccountId) ?? "Cuenta vinculada"}
+                  </p>
+                )}
               </div>
               <Badge variant={item.type}>{item.type === "income" ? "Ingreso" : "Gasto"}</Badge>
             </div>
@@ -38,10 +87,13 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
                 <p className="mt-1 font-semibold">{formatter.format(item.amount)}</p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">Descripción</p>
-                <p className="mt-1 truncate">{item.description || "Sin descripción"}</p>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">Saldo cuenta</p>
+                <p className="mt-1 truncate">
+                  {item.bankAccountId ? formatter.format(runningBalances.get(item.id) ?? 0) : "-"}
+                </p>
               </div>
             </div>
+            <p className="mb-3 text-sm text-muted-foreground">{item.description || "Sin descripción"}</p>
             <div className="flex justify-end">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -75,7 +127,8 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
               <TableHead>Cuenta</TableHead>
               <TableHead>Descripción</TableHead>
               <TableHead className="text-right">Cantidad</TableHead>
-              <TableHead className="text-right">Acciones</TableHead>
+              <TableHead>Saldo cuenta</TableHead>
+              <TableHead className="text-right"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -86,9 +139,12 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
                   <Badge variant={item.type}>{item.type === "income" ? "Ingreso" : "Gasto"}</Badge>
                 </TableCell>
                 <TableCell>{item.category}</TableCell>
-                <TableCell>{item.bankAccountId ? "Vinculada" : "-"}</TableCell>
+                <TableCell>
+                  {item.bankAccountId ? (bankNames.get(item.bankAccountId) ?? "Cuenta vinculada") : "-"}
+                </TableCell>
                 <TableCell>{item.description || "Sin descripción"}</TableCell>
                 <TableCell className="text-right font-semibold">{formatter.format(item.amount)}</TableCell>
+                <TableCell>{item.bankAccountId ? formatter.format(runningBalances.get(item.id) ?? 0) : "-"}</TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>

@@ -8,15 +8,17 @@ const amountFormatter = new Intl.NumberFormat("es-ES", {
 });
 
 export function RecentTransactions({ summary }: { summary: MonthlySummary }) {
+  const recentItems = summary.recentTransactions.slice(0, 3);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Últimos movimientos</CardTitle>
-        <CardDescription>Los 5 movimientos más recientes del mes.</CardDescription>
+        <CardDescription>Los 3 movimientos más recientes del mes.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        {summary.recentTransactions.length ? (
-          summary.recentTransactions.map((item) => (
+        {recentItems.length ? (
+          recentItems.map((item) => (
             <div key={item.id} className="flex items-center justify-between rounded-2xl bg-secondary px-4 py-3">
               <div>
                 <p className="font-medium">{item.category}</p>

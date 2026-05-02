@@ -1,5 +1,5 @@
 import type { AnnualSummary } from "@personal-finance/shared";
-import { ArrowDownCircle, ArrowUpCircle, CalendarRange, Scale } from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, Scale } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -14,20 +14,15 @@ export function AnnualSummaryOverview({ summary }: { summary: AnnualSummary }) {
     { title: "Balance anual", value: summary.balance, icon: Scale },
     { title: "Ingresos anuales", value: summary.income, icon: ArrowUpCircle },
     { title: "Gastos anuales", value: summary.expense, icon: ArrowDownCircle },
-    {
-      title: "Meses activos",
-      value: summary.months.filter((item) => item.income || item.expense).length,
-      icon: CalendarRange,
-    },
   ];
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-3">
         {items.map(({ title, value, icon: Icon }) => (
           <Card key={title}>
             <CardHeader className="flex-row items-center justify-between space-y-0">
-              <CardTitle className="text-sm text-muted-foreground">{title}</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground sm:whitespace-nowrap">{title}</CardTitle>
               <Icon className="h-5 w-5 text-primary" />
             </CardHeader>
             <CardContent>

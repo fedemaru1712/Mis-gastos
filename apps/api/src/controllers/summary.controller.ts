@@ -2,6 +2,7 @@ import { Response } from "express";
 import { monthParamSchema, yearParamSchema } from "@personal-finance/shared";
 import { Types } from "mongoose";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware.js";
+import { BankAccount } from "../models/BankAccount.js";
 import { Transaction } from "../models/Transaction.js";
 import { validateWithSchema } from "../utils/validators.js";
 
@@ -119,29 +120,34 @@ export async function getAnnualSummary(request: AuthenticatedRequest, response: 
   const end = new Date(Date.UTC(Number(currentYear) + 1, 0, 1));
   const userId = new Types.ObjectId(request.auth?.userId);
 
-  const monthlyTotals = await Transaction.aggregate([
-    { $match: { userId, date: { $gte: start, $lt: end } } },
-    {
-      $group: {
-        _id: {
-          month: { $month: "$date" },
-          type: "$type",
+  const [monthlyTotals, accounts] = await Promise.all([
+    Transaction.aggregate([
+      { $match: { userId, date: { $gte: start, $lt: end } } },
+      {
+        $group: {
+          _id: {
+            month: { $month: "$date" },
+            type: "$type",
+          },
+          total: { $sum: "$amount" },
         },
-        total: { $sum: "$amount" },
       },
-    },
-    { $sort: { "_id.month": 1 } },
+      { $sort: { "_id.month": 1 } },
+    ]),
+    BankAccount.find({ userId }).select({ openingBalance: 1 }),
   ]);
 
   const months = buildAnnualMonths(currentYear, monthlyTotals);
+  const openingBalance = accounts.reduce((sum, account) => sum + (account.openingBalance ?? 0), 0);
   const income = months.reduce((sum, item) => sum + item.income, 0);
   const expense = months.reduce((sum, item) => sum + item.expense, 0);
 
   return response.json({
     year: currentYear,
+    openingBalance,
     income,
     expense,
-    balance: income - expense,
+    balance: openingBalance + income - expense,
     months,
   });
 }

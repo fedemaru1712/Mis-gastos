@@ -5,6 +5,7 @@ export const objectIdSchema = z.string().regex(/^[a-f\d]{24}$/i, "Invalid id");
 export const bankAccountSchema = z.object({
   bankName: z.string().trim().min(2, "Bank is required").max(80),
   accountName: z.string().trim().min(2, "Account name is required").max(80),
+  openingBalance: z.number().min(0, "Opening balance must be greater than or equal to 0"),
   currency: z
     .string()
     .trim()

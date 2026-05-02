@@ -24,7 +24,7 @@ export function InvestmentProfitabilityChart({
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <div className="h-72 min-w-[680px]">
+            <div className="h-72 min-w-[320px] sm:min-w-[520px] lg:min-w-0">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={entries} margin={{ top: 10, right: 12, left: -18, bottom: 0 }}>
                   <CartesianGrid stroke="rgba(148,163,184,0.12)" vertical={false} />

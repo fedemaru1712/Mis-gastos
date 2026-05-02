@@ -34,6 +34,7 @@ export async function listTransactions(request: AuthenticatedRequest, response: 
   const query = {
     userId: new Types.ObjectId(request.auth?.userId),
     ...(filters.type && filters.type !== "all" ? { type: filters.type } : {}),
+    ...(filters.category && filters.category !== "all" ? { category: filters.category } : {}),
     ...(date ? { date } : {}),
   };
 

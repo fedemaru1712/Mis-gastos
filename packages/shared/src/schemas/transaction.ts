@@ -20,6 +20,12 @@ export const transactionSchema = z.object({
 
 export const transactionFiltersSchema = z.object({
   type: transactionTypeSchema.or(z.literal("all")).optional(),
+  category: z
+    .string()
+    .refine((value) => value === "all" || allCategories.includes(value as (typeof allCategories)[number]), {
+      message: "Category is not allowed",
+    })
+    .optional(),
   month: z
     .string()
     .regex(/^\d{4}-\d{2}$/, "Month must use YYYY-MM format")

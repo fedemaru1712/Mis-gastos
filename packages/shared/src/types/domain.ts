@@ -29,6 +29,7 @@ export interface BankAccount {
   userId: string;
   bankName: string;
   accountName: string;
+  openingBalance: number;
   currency: string;
   createdAt: string;
   updatedAt: string;
@@ -74,6 +75,7 @@ export interface MonthlySummary {
 
 export interface AnnualSummary {
   year: string;
+  openingBalance: number;
   income: number;
   expense: number;
   balance: number;

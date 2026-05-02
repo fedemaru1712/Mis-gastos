@@ -8,6 +8,7 @@ import { SummaryCards } from "@/components/dashboard/summary-cards";
 import { MonthPickerField } from "@/components/forms/month-picker-field";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { fetchInvestments } from "@/services/investments";
 import { fetchAnnualSummary, fetchMonthlySummary } from "@/services/summary";
 
 export function DashboardPage() {
@@ -22,6 +23,7 @@ export function DashboardPage() {
 
   const monthlyQuery = useQuery({ queryKey: ["summary", month], queryFn: () => fetchMonthlySummary(month) });
   const annualQuery = useQuery({ queryKey: ["summary", "annual", year], queryFn: () => fetchAnnualSummary(year) });
+  const investmentsQuery = useQuery({ queryKey: ["investments"], queryFn: fetchInvestments });
   const content = useMemo(() => {
     if (monthlyQuery.isPending || annualQuery.isPending) {
       return (
@@ -42,17 +44,20 @@ export function DashboardPage() {
     if (!monthlyQuery.data || !annualQuery.data) {
       return null;
     }
+
+    const investmentProfitability = investmentsQuery.data?.items.length
+      ? investmentsQuery.data.items.reduce((sum, item) => sum + item.profitabilityAmount, 0)
+      : null;
+
     return (
       <div className="space-y-6">
-        <SummaryCards summary={monthlyQuery.data} />
+        <SummaryCards summary={monthlyQuery.data} investmentProfitability={investmentProfitability} />
         <div className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
           <MonthlyCashflowChart summary={monthlyQuery.data} />
-          <RecentTransactions summary={monthlyQuery.data} />
-        </div>
-        <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-          <AnnualSummaryOverview summary={annualQuery.data} />
           <ExpenseChart summary={monthlyQuery.data} />
         </div>
+        <AnnualSummaryOverview summary={annualQuery.data} />
+        <RecentTransactions summary={monthlyQuery.data} />
       </div>
     );
   }, [
@@ -60,6 +65,7 @@ export function DashboardPage() {
     annualQuery.error,
     annualQuery.isError,
     annualQuery.isPending,
+    investmentsQuery.data,
     monthlyQuery.data,
     monthlyQuery.error,
     monthlyQuery.isError,

@@ -79,10 +79,10 @@ export function InvestmentsPage() {
   const latestYear = allEntries.at(-1)?.month.slice(0, 4) ?? "all";
   const yearFilter = yearSelection.planId === activePlan?.id ? yearSelection.year : latestYear;
   const latestEntry = allEntries.at(-1);
-  const currentEntry = allEntries.find((entry) => entry.month === currentMonthKey()) ?? latestEntry;
+  const currentEntry = allEntries.find((entry) => entry.month === currentMonthKey()) ?? null;
   const summaryEntry = period === "current" ? currentEntry : latestEntry;
   const summaryPositive = (summaryEntry?.profitabilityPercentage ?? 0) >= 0;
-  const chartEntries = period === "current" ? allEntries.slice(-6) : allEntries;
+  const chartEntries = period === "current" ? (currentEntry ? [currentEntry] : []) : allEntries;
   const availableYears = [...new Set(allEntries.map((entry) => entry.month.slice(0, 4)))].sort((left, right) =>
     right.localeCompare(left),
   );
@@ -206,7 +206,7 @@ export function InvestmentsPage() {
                       <h3 className="mt-2 text-3xl font-semibold tracking-tight">{activePlan.name}</h3>
                       <p className="mt-2 text-sm text-muted-foreground">
                         {period === "current"
-                          ? "Cierre del mes actual o ultimo disponible"
+                          ? "Cierre del mes actual registrado"
                           : "Ultimo cierre historico registrado"}
                       </p>
                     </div>
@@ -215,7 +215,7 @@ export function InvestmentsPage() {
                         summaryPositive ? "bg-emerald-500/15 text-emerald-400" : "bg-rose-500/15 text-rose-400"
                       }
                     >
-                      {summaryEntry?.month ?? "Sin cierres"}
+                      {summaryEntry?.month ?? (period === "current" ? "Sin cierre actual" : "Sin cierres")}
                     </Badge>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -295,10 +295,7 @@ export function InvestmentsPage() {
             </CardContent>
           </Card>
 
-          <InvestmentInsightsGrid
-            entries={period === "current" ? chartEntries : allEntries}
-            totalContributed={activePlan.totalContributed}
-          />
+          <InvestmentInsightsGrid entries={chartEntries} totalContributed={activePlan.totalContributed} />
 
           <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
             <InvestmentProfitabilityChart

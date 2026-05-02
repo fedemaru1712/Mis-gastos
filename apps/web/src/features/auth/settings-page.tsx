@@ -10,6 +10,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { createBankAccount, deleteBankAccount, fetchBankAccounts, updateBankAccount } from "@/services/bank-accounts";
 import { BankAccountFormValues } from "@/types/api";
 
+const money = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" });
+
 export function SettingsPage() {
   const { user, signOut } = useAuth();
   const queryClient = useQueryClient();
@@ -90,6 +92,9 @@ export function SettingsPage() {
                     <Landmark className="h-5 w-5 text-primary" />
                   </div>
                   <p className="mb-4 text-sm text-muted-foreground">Moneda: {account.currency}</p>
+                  <p className="mb-4 text-sm text-muted-foreground">
+                    Saldo inicial: {money.format(account.openingBalance)}
+                  </p>
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
