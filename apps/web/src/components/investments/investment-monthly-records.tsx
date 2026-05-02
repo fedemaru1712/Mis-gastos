@@ -6,8 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
-
-const money = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" });
+import { formatCurrency, formatPercent } from "@/lib/format";
 
 function formatMonth(month: string) {
   return format(new Date(`${month}-01T00:00:00`), "MMMM yyyy", { locale: es });
@@ -79,14 +78,14 @@ export function InvestmentMonthlyRecords({
               {entries.map((entry) => (
                 <tr key={entry.month} className="border-t border-border/70">
                   <td className="px-4 py-3 capitalize">{formatMonth(entry.month)}</td>
-                  <td className="px-4 py-3">{money.format(entry.contribution)}</td>
-                  <td className="px-4 py-3">{money.format(entry.endOfMonthValue)}</td>
+                  <td className="px-4 py-3">{formatCurrency(entry.contribution)}</td>
+                  <td className="px-4 py-3">{formatCurrency(entry.endOfMonthValue)}</td>
                   <td
                     className={
                       entry.profitabilityAmount >= 0 ? "px-4 py-3 text-emerald-400" : "px-4 py-3 text-rose-400"
                     }
                   >
-                    {money.format(entry.profitabilityAmount)}
+                    {formatCurrency(entry.profitabilityAmount)}
                   </td>
                   <td className="px-4 py-3">
                     <Badge
@@ -96,7 +95,7 @@ export function InvestmentMonthlyRecords({
                           : "bg-rose-500/15 text-rose-400"
                       }
                     >
-                      {entry.profitabilityPercentage.toFixed(2)}%
+                      {formatPercent(entry.profitabilityPercentage)}
                     </Badge>
                   </td>
                   <td className="px-4 py-3">
@@ -115,7 +114,7 @@ export function InvestmentMonthlyRecords({
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold capitalize">{formatMonth(entry.month)}</p>
-                  <p className="text-xs text-muted-foreground">Aportación {money.format(entry.contribution)}</p>
+                  <p className="text-xs text-muted-foreground">Aportación {formatCurrency(entry.contribution)}</p>
                 </div>
                 <Badge
                   className={
@@ -124,13 +123,13 @@ export function InvestmentMonthlyRecords({
                       : "bg-rose-500/15 text-rose-400"
                   }
                 >
-                  {entry.profitabilityPercentage.toFixed(2)}%
+                  {formatPercent(entry.profitabilityPercentage)}
                 </Badge>
               </div>
               <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <p className="text-xs text-muted-foreground">Valor final</p>
-                  <p className="font-semibold">{money.format(entry.endOfMonthValue)}</p>
+                  <p className="font-semibold">{formatCurrency(entry.endOfMonthValue)}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Resultado</p>
@@ -139,7 +138,7 @@ export function InvestmentMonthlyRecords({
                       entry.profitabilityAmount >= 0 ? "font-semibold text-emerald-400" : "font-semibold text-rose-400"
                     }
                   >
-                    {money.format(entry.profitabilityAmount)}
+                    {formatCurrency(entry.profitabilityAmount)}
                   </p>
                 </div>
               </div>

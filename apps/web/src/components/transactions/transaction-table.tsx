@@ -13,8 +13,7 @@ import {
 import { fetchBankAccounts } from "@/services/bank-accounts";
 import { fetchTransactions } from "@/services/transactions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-const formatter = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" });
+import { formatCurrency } from "@/lib/format";
 
 interface Props {
   items: TransactionItem[];
@@ -84,12 +83,12 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
             <div className="mb-3 grid grid-cols-2 gap-3 text-sm">
               <div>
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Cantidad</p>
-                <p className="mt-1 font-semibold">{formatter.format(item.amount)}</p>
+                <p className="mt-1 font-semibold">{formatCurrency(item.amount)}</p>
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Saldo cuenta</p>
                 <p className="mt-1 truncate">
-                  {item.bankAccountId ? formatter.format(runningBalances.get(item.id) ?? 0) : "-"}
+                  {item.bankAccountId ? formatCurrency(runningBalances.get(item.id) ?? 0) : "-"}
                 </p>
               </div>
             </div>
@@ -143,8 +142,8 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
                   {item.bankAccountId ? (bankNames.get(item.bankAccountId) ?? "Cuenta vinculada") : "-"}
                 </TableCell>
                 <TableCell>{item.description || "Sin descripción"}</TableCell>
-                <TableCell className="text-right font-semibold">{formatter.format(item.amount)}</TableCell>
-                <TableCell>{item.bankAccountId ? formatter.format(runningBalances.get(item.id) ?? 0) : "-"}</TableCell>
+                <TableCell className="text-right font-semibold">{formatCurrency(item.amount)}</TableCell>
+                <TableCell>{item.bankAccountId ? formatCurrency(runningBalances.get(item.id) ?? 0) : "-"}</TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>

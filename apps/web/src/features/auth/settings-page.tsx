@@ -7,10 +7,9 @@ import { BankAccountFormDialog } from "@/components/forms/bank-account-form-dial
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { formatCurrency } from "@/lib/format";
 import { createBankAccount, deleteBankAccount, fetchBankAccounts, updateBankAccount } from "@/services/bank-accounts";
 import { BankAccountFormValues } from "@/types/api";
-
-const money = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" });
 
 export function SettingsPage() {
   const { user, signOut } = useAuth();
@@ -93,7 +92,7 @@ export function SettingsPage() {
                   </div>
                   <p className="mb-4 text-sm text-muted-foreground">Moneda: {account.currency}</p>
                   <p className="mb-4 text-sm text-muted-foreground">
-                    Saldo inicial: {money.format(account.openingBalance)}
+                    Saldo inicial: {formatCurrency(account.openingBalance)}
                   </p>
                   <div className="flex gap-2">
                     <Button

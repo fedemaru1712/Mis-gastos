@@ -2,12 +2,7 @@ import type { AnnualSummary } from "@personal-finance/shared";
 import { ArrowDownCircle, ArrowUpCircle, Scale } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-const amountFormatter = new Intl.NumberFormat("es-ES", {
-  style: "currency",
-  currency: "EUR",
-  maximumFractionDigits: 0,
-});
+import { formatCurrency } from "@/lib/format";
 
 export function AnnualSummaryOverview({ summary }: { summary: AnnualSummary }) {
   const items = [
@@ -27,7 +22,7 @@ export function AnnualSummaryOverview({ summary }: { summary: AnnualSummary }) {
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-semibold">
-                {typeof value === "number" && title !== "Meses activos" ? amountFormatter.format(value) : value}
+                {typeof value === "number" && title !== "Meses activos" ? formatCurrency(value) : value}
               </p>
             </CardContent>
           </Card>
@@ -44,14 +39,14 @@ export function AnnualSummaryOverview({ summary }: { summary: AnnualSummary }) {
               <CartesianGrid stroke="rgba(148, 163, 184, 0.12)" vertical={false} />
               <XAxis dataKey="label" tickLine={false} axisLine={false} />
               <YAxis
-                tickFormatter={(value) => amountFormatter.format(value)}
+                tickFormatter={(value) => formatCurrency(Number(value ?? 0))}
                 tickLine={false}
                 axisLine={false}
                 width={72}
               />
               <Tooltip
                 formatter={(value, name) => [
-                  amountFormatter.format(Number(value ?? 0)),
+                  formatCurrency(Number(value ?? 0)),
                   name === "income" ? "Ingresos" : "Gastos",
                 ]}
                 contentStyle={{

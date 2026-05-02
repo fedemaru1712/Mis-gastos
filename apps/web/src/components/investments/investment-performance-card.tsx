@@ -3,8 +3,7 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-const money = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" });
+import { formatCurrency, formatNumber, formatPercent } from "@/lib/format";
 
 export function InvestmentPerformanceCard({
   investment,
@@ -36,17 +35,17 @@ export function InvestmentPerformanceCard({
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div className="rounded-md bg-background/50 p-3">
             <p className="text-xs text-muted-foreground">Total invertido</p>
-            <p className="mt-1 font-semibold">{money.format(investment.totalContributed)}</p>
+            <p className="mt-1 font-semibold">{formatCurrency(investment.totalContributed)}</p>
           </div>
           <div className="rounded-md bg-background/50 p-3">
             <p className="text-xs text-muted-foreground">Valor actual</p>
-            <p className="mt-1 font-semibold">{money.format(investment.currentValue)}</p>
+            <p className="mt-1 font-semibold">{formatCurrency(investment.currentValue)}</p>
           </div>
         </div>
         <div className="rounded-md bg-background/50 p-3">
           <p className="text-xs text-muted-foreground">Rentabilidad total</p>
           <p className={positive ? "mt-1 font-semibold text-emerald-400" : "mt-1 font-semibold text-rose-400"}>
-            {money.format(investment.profitabilityAmount)} · {investment.profitabilityPercentage.toFixed(2)}%
+            {formatCurrency(investment.profitabilityAmount)} · {formatPercent(investment.profitabilityPercentage)}
           </p>
         </div>
         <div className="h-52">
@@ -64,10 +63,15 @@ export function InvestmentPerformanceCard({
               </defs>
               <CartesianGrid stroke="rgba(148,163,184,0.12)" vertical={false} />
               <XAxis dataKey="month" tickFormatter={(value) => value.slice(5)} tickLine={false} axisLine={false} />
-              <YAxis tickLine={false} axisLine={false} width={64} tickFormatter={(value) => String(value)} />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                width={64}
+                tickFormatter={(value) => formatNumber(Number(value ?? 0))}
+              />
               <Tooltip
                 formatter={(value, name) => [
-                  money.format(Number(value ?? 0)),
+                  formatCurrency(Number(value ?? 0)),
                   name === "totalInvested" ? "Total invertido" : "Valor mercado",
                 ]}
                 labelFormatter={(label) => `Mes ${label}`}
@@ -104,9 +108,9 @@ export function InvestmentPerformanceCard({
                 className="flex items-center justify-between rounded-md bg-background/40 px-3 py-2 text-sm"
               >
                 <span>{entry.month}</span>
-                <span className="text-muted-foreground">Aporte {money.format(entry.contribution)}</span>
+                <span className="text-muted-foreground">Aporte {formatCurrency(entry.contribution)}</span>
                 <span className={entry.profitabilityPercentage >= 0 ? "text-emerald-400" : "text-rose-400"}>
-                  {entry.profitabilityPercentage.toFixed(2)}%
+                  {formatPercent(entry.profitabilityPercentage)}
                 </span>
               </div>
             ))}

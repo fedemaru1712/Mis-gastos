@@ -1,11 +1,7 @@
 import { MonthlySummary } from "@personal-finance/shared";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-const amountFormatter = new Intl.NumberFormat("es-ES", {
-  style: "currency",
-  currency: "EUR",
-});
+import { formatCurrency } from "@/lib/format";
 
 export function RecentTransactions({ summary }: { summary: MonthlySummary }) {
   const recentItems = summary.recentTransactions.slice(0, 3);
@@ -28,7 +24,7 @@ export function RecentTransactions({ summary }: { summary: MonthlySummary }) {
                 <Badge variant={item.type} className="mb-2">
                   {item.type === "income" ? "Ingreso" : "Gasto"}
                 </Badge>
-                <p className="font-semibold">{amountFormatter.format(item.amount)}</p>
+                <p className="font-semibold">{formatCurrency(item.amount)}</p>
               </div>
             </div>
           ))

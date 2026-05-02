@@ -1,8 +1,7 @@
 import type { InvestmentPosition } from "@personal-finance/shared";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-const money = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" });
+import { formatCurrency, formatPercent } from "@/lib/format";
 
 export function InvestmentProfitabilityChart({
   entries,
@@ -29,22 +28,27 @@ export function InvestmentProfitabilityChart({
                 <BarChart data={entries} margin={{ top: 10, right: 12, left: -18, bottom: 0 }}>
                   <CartesianGrid stroke="rgba(148,163,184,0.12)" vertical={false} />
                   <XAxis dataKey="month" tickFormatter={(value) => value.slice(5)} tickLine={false} axisLine={false} />
-                  <YAxis tickFormatter={(value) => `${value}%`} tickLine={false} axisLine={false} width={56} />
+                  <YAxis
+                    tickFormatter={(value) => formatPercent(Number(value ?? 0))}
+                    tickLine={false}
+                    axisLine={false}
+                    width={56}
+                  />
                   <Tooltip
                     cursor={{ fill: "rgba(148, 163, 184, 0.08)" }}
                     formatter={(value, name, payload) => {
                       if (name === "profitabilityPercentage") {
-                        return [`${Number(value).toFixed(2)}%`, "Rentabilidad"];
+                        return [formatPercent(Number(value ?? 0)), "Rentabilidad"];
                       }
 
                       const entry = payload.payload as InvestmentPosition["monthlyEntries"][number];
-                      return [money.format(entry.profitabilityAmount), "Resultado"];
+                      return [formatCurrency(entry.profitabilityAmount), "Resultado"];
                     }}
                     labelFormatter={(label, payload) => {
                       const entry = payload?.[0]?.payload as InvestmentPosition["monthlyEntries"][number] | undefined;
                       if (!entry) return label;
 
-                      return `${label} · Aporte ${money.format(entry.contribution)} · Resultado ${money.format(entry.profitabilityAmount)}`;
+                      return `${label} · Aporte ${formatCurrency(entry.contribution)} · Resultado ${formatCurrency(entry.profitabilityAmount)}`;
                     }}
                     contentStyle={{
                       backgroundColor: "rgba(15, 23, 42, 0.96)",

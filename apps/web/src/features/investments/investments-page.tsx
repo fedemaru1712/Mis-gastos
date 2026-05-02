@@ -11,10 +11,9 @@ import { InvestmentProfitabilityChart } from "@/components/investments/investmen
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatCurrency, formatPercent } from "@/lib/format";
 import { fetchInvestments, createInvestment, updateInvestment } from "@/services/investments";
 import { InvestmentFormValues } from "@/types/api";
-
-const money = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" });
 
 function currentMonthKey() {
   return new Date().toISOString().slice(0, 7);
@@ -221,11 +220,13 @@ export function InvestmentsPage() {
                   <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                     <div>
                       <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Total invertido</p>
-                      <p className="mt-2 text-3xl font-semibold">{money.format(summaryEntry?.totalInvested ?? 0)}</p>
+                      <p className="mt-2 text-3xl font-semibold">{formatCurrency(summaryEntry?.totalInvested ?? 0)}</p>
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Valor actual</p>
-                      <p className="mt-2 text-3xl font-semibold">{money.format(summaryEntry?.endOfMonthValue ?? 0)}</p>
+                      <p className="mt-2 text-3xl font-semibold">
+                        {formatCurrency(summaryEntry?.endOfMonthValue ?? 0)}
+                      </p>
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Ganancia / Perdida</p>
@@ -236,7 +237,7 @@ export function InvestmentsPage() {
                             : "mt-2 text-3xl font-semibold text-rose-400"
                         }
                       >
-                        {money.format(summaryEntry?.profitabilityAmount ?? 0)}
+                        {formatCurrency(summaryEntry?.profitabilityAmount ?? 0)}
                       </p>
                     </div>
                     <div>
@@ -248,7 +249,7 @@ export function InvestmentsPage() {
                             : "mt-2 text-4xl font-semibold text-rose-400"
                         }
                       >
-                        {(summaryEntry?.profitabilityPercentage ?? 0).toFixed(2)}%
+                        {formatPercent(summaryEntry?.profitabilityPercentage ?? 0)}
                       </p>
                     </div>
                   </div>
@@ -284,10 +285,10 @@ export function InvestmentsPage() {
                           : "mt-3 text-2xl font-semibold text-rose-400"
                       }
                     >
-                      {money.format(summaryEntry?.profitabilityAmount ?? 0)}
+                      {formatCurrency(summaryEntry?.profitabilityAmount ?? 0)}
                     </p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Sobre un acumulado de {money.format(summaryEntry?.totalInvested ?? 0)}
+                      Sobre un acumulado de {formatCurrency(summaryEntry?.totalInvested ?? 0)}
                     </p>
                   </div>
                 </div>
@@ -310,11 +311,11 @@ export function InvestmentsPage() {
               <CardContent className="space-y-4">
                 <div className="rounded-xl bg-secondary/30 p-4">
                   <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Plan mensual actual</p>
-                  <p className="mt-2 text-2xl font-semibold">{money.format(latestEntry?.contribution ?? 0)}</p>
+                  <p className="mt-2 text-2xl font-semibold">{formatCurrency(latestEntry?.contribution ?? 0)}</p>
                 </div>
                 <div className="rounded-xl bg-secondary/30 p-4">
                   <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Valor total de cartera</p>
-                  <p className="mt-2 text-2xl font-semibold">{money.format(activePlan.currentValue)}</p>
+                  <p className="mt-2 text-2xl font-semibold">{formatCurrency(activePlan.currentValue)}</p>
                 </div>
                 <div className="rounded-xl bg-secondary/30 p-4">
                   <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Rentabilidad acumulada</p>
@@ -325,7 +326,7 @@ export function InvestmentsPage() {
                         : "mt-2 text-2xl font-semibold text-rose-400"
                     }
                   >
-                    {activePlan.profitabilityPercentage.toFixed(2)}%
+                    {formatPercent(activePlan.profitabilityPercentage)}
                   </p>
                 </div>
               </CardContent>

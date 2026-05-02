@@ -1,11 +1,7 @@
 import { ArrowDownCircle, ArrowUpCircle, Scale, TrendingDown, TrendingUp } from "lucide-react";
 import { MonthlySummary } from "@personal-finance/shared";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const formatCurrency = new Intl.NumberFormat("es-ES", {
-  style: "currency",
-  currency: "EUR",
-});
+import { formatCurrency } from "@/lib/format";
 
 export function SummaryCards({
   summary,
@@ -38,7 +34,7 @@ export function SummaryCards({
             <Icon className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <p className={`text-3xl font-semibold ${valueClassName}`}>{formatCurrency.format(value)}</p>
+            <p className={`text-3xl font-semibold ${valueClassName}`}>{formatCurrency(value)}</p>
           </CardContent>
         </Card>
       ))}

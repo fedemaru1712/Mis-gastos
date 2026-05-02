@@ -1,5 +1,6 @@
 import type { InvestmentPosition } from "@personal-finance/shared";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatCurrency, formatPercent } from "@/lib/format";
 
 function insightLabel(month?: string) {
   return month ? month : "Sin datos";
@@ -20,18 +21,18 @@ export function InvestmentInsightsGrid({
   const cards = [
     {
       label: "Mejor mes",
-      value: `${best?.profitabilityPercentage.toFixed(2) ?? "0.00"}%`,
+      value: formatPercent(best?.profitabilityPercentage ?? 0),
       helper: insightLabel(best?.month),
     },
     {
       label: "Peor mes",
-      value: `${worst?.profitabilityPercentage.toFixed(2) ?? "0.00"}%`,
+      value: formatPercent(worst?.profitabilityPercentage ?? 0),
       helper: insightLabel(worst?.month),
     },
-    { label: "Media mensual", value: `${average.toFixed(2)}%`, helper: `${entries.length} meses analizados` },
+    { label: "Media mensual", value: formatPercent(average), helper: `${entries.length} meses analizados` },
     {
       label: "Total aportado",
-      value: `${new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(totalContributed)}`,
+      value: formatCurrency(totalContributed),
       helper: "Capital acumulado",
     },
   ];

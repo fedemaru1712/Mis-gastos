@@ -1,12 +1,7 @@
 import type { MonthlySummary } from "@personal-finance/shared";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-const amountFormatter = new Intl.NumberFormat("es-ES", {
-  style: "currency",
-  currency: "EUR",
-  maximumFractionDigits: 0,
-});
+import { formatCurrency } from "@/lib/format";
 
 export function MonthlyCashflowChart({ summary }: { summary: MonthlySummary }) {
   return (
@@ -31,14 +26,14 @@ export function MonthlyCashflowChart({ summary }: { summary: MonthlySummary }) {
             <CartesianGrid stroke="rgba(148, 163, 184, 0.12)" vertical={false} />
             <XAxis dataKey="day" tickLine={false} axisLine={false} minTickGap={18} />
             <YAxis
-              tickFormatter={(value) => amountFormatter.format(value)}
+              tickFormatter={(value) => formatCurrency(Number(value ?? 0))}
               tickLine={false}
               axisLine={false}
               width={70}
             />
             <Tooltip
               formatter={(value, name) => [
-                amountFormatter.format(Number(value ?? 0)),
+                formatCurrency(Number(value ?? 0)),
                 name === "income" ? "Ingresos" : "Gastos",
               ]}
               labelFormatter={(label) => `Día ${label}`}

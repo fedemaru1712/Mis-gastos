@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-
 const monthEntrySchema = z.object({
   month: z.string().regex(/^\d{4}-\d{2}$/),
   contribution: z.number().min(0),
@@ -16,8 +15,7 @@ const monthEntrySchema = z.object({
 });
 
 type MonthEntryValues = z.infer<typeof monthEntrySchema>;
-
-const money = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" });
+import { formatCurrency, formatPercent } from "@/lib/format";
 
 function nextMonth(month?: string) {
   const baseMonth = month ?? new Date().toISOString().slice(0, 7);
@@ -104,7 +102,7 @@ export function InvestmentMonthDialog({ open, investment, monthEntry, onOpenChan
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <div>
                 <p className="text-xs text-muted-foreground">Total acumulado</p>
-                <p className="mt-1 text-lg font-semibold">{money.format(totalInvested)}</p>
+                <p className="mt-1 text-lg font-semibold">{formatCurrency(totalInvested)}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Resultado</p>
@@ -115,7 +113,7 @@ export function InvestmentMonthDialog({ open, investment, monthEntry, onOpenChan
                       : "mt-1 text-lg font-semibold text-rose-400"
                   }
                 >
-                  {money.format(result)}
+                  {formatCurrency(result)}
                 </p>
               </div>
             </div>
@@ -123,7 +121,7 @@ export function InvestmentMonthDialog({ open, investment, monthEntry, onOpenChan
               className={result >= 0 ? "mt-3 bg-emerald-500/15 text-emerald-400" : "mt-3 bg-rose-500/15 text-rose-400"}
             >
               {percentage >= 0 ? "+" : ""}
-              {percentage.toFixed(2)}%
+              {formatPercent(percentage)}
             </Badge>
           </div>
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
