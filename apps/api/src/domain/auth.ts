@@ -11,8 +11,5 @@ export const monthParamSchema = z.object({
 });
 
 export const yearParamSchema = z.object({
-  year: z
-    .string()
-    .regex(/^\d{4}$/, "Year must use YYYY format")
-    .optional(),
+  year: z.string().regex(/^\d{4}$/, "Year must use YYYY format").optional(),
 });

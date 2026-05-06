@@ -4,14 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "cd ../.. && npm run build --workspace @personal-finance/shared",
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "check": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@personal-finance/shared": "*",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",

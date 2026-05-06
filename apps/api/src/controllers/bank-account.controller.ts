@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { bankAccountSchema, objectIdSchema } from "@personal-finance/shared";
+import { bankAccountSchema, objectIdSchema } from "../domain/index.js";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware.js";
 import { BankAccount } from "../models/BankAccount.js";
 import { validateWithSchema } from "../utils/validators.js";

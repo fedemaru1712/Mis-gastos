@@ -1,5 +1,5 @@
 import { ArrowDownCircle, ArrowUpCircle, Scale, TrendingDown, TrendingUp } from "lucide-react";
-import { MonthlySummary } from "@personal-finance/shared";
+import { MonthlySummary } from "@/domain";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/format";
 

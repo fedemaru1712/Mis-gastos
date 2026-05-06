@@ -1,4 +1,4 @@
-import type { MonthlySummary } from "@personal-finance/shared";
+import type { MonthlySummary } from "@/domain";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/format";

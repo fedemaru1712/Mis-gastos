@@ -1,4 +1,4 @@
-import { BarChart3, ChevronLeft, ChevronRight, LineChart, LogOut, Settings, Wallet } from "lucide-react";
+import { BarChart3, ChevronLeft, ChevronRight, Landmark, LineChart, LogOut, Settings, Wallet } from "lucide-react";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,6 +10,7 @@ const links = [
   { to: "/dashboard", label: "Dashboard", icon: BarChart3 },
   { to: "/transactions", label: "Movimientos", icon: Wallet },
   { to: "/investments", label: "Inversiones", icon: LineChart },
+  { to: "/loans", label: "Mis préstamos", icon: Landmark },
   { to: "/settings", label: "Ajustes", icon: Settings },
 ];
 
@@ -177,7 +178,7 @@ export function PrivateLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2 backdrop-blur lg:hidden">
-        <div className="grid grid-cols-4 gap-1">
+        <div className="grid grid-cols-5 gap-1">
           {links.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}

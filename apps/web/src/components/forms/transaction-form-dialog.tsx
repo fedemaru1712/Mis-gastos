@@ -2,13 +2,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
-import { expenseCategories, incomeCategories, transactionSchema, TransactionItem } from "@personal-finance/shared";
+import { expenseCategories, incomeCategories, transactionSchema, TransactionItem } from "@/domain";
 import { Button } from "@/components/ui/button";
 import { DatePickerField } from "@/components/forms/date-picker-field";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { fetchBankAccounts } from "@/services/bank-accounts";
+import { fetchLoans } from "@/services/loans";
 import { TransactionFormValues } from "@/types/api";
 
 interface Props {
@@ -25,21 +26,35 @@ export function TransactionFormDialog({ open, transaction, onOpenChange, onSubmi
       type: "expense",
       amount: 0,
       category: expenseCategories[0],
+      loanId: "",
       description: "",
       date: new Date().toISOString().slice(0, 10),
     },
   });
 
   const type = useWatch({ control: form.control, name: "type" });
+  const category = useWatch({ control: form.control, name: "category" });
+  const loanId = useWatch({ control: form.control, name: "loanId" });
   const selectedDate = useWatch({ control: form.control, name: "date" });
   const categories = type === "income" ? incomeCategories : expenseCategories;
   const bankAccountsQuery = useQuery({ queryKey: ["bank-accounts"], queryFn: fetchBankAccounts });
+  const loansQuery = useQuery({ queryKey: ["loans"], queryFn: fetchLoans });
+  const activeLoans = (loansQuery.data?.items ?? []).filter((loan) => loan.status === "active");
+  const showLoanRepaymentOption = type === "expense" && category === "Préstamos";
+  const repaymentEnabled = showLoanRepaymentOption && Boolean(loanId);
+
+  useEffect(() => {
+    if (!showLoanRepaymentOption && loanId) {
+      form.setValue("loanId", "", { shouldValidate: true });
+    }
+  }, [form, loanId, showLoanRepaymentOption]);
 
   useEffect(() => {
     form.reset(
       transaction
         ? {
             bankAccountId: transaction.bankAccountId ?? "",
+            loanId: transaction.loanId ?? "",
             type: transaction.type,
             amount: transaction.amount,
             category: transaction.category,
@@ -48,6 +63,7 @@ export function TransactionFormDialog({ open, transaction, onOpenChange, onSubmi
           }
         : {
             bankAccountId: "",
+            loanId: "",
             type: "expense",
             amount: 0,
             category: expenseCategories[0],
@@ -91,6 +107,37 @@ export function TransactionFormDialog({ open, transaction, onOpenChange, onSubmi
               </option>
             ))}
           </Select>
+          {showLoanRepaymentOption && (
+            <div className="sm:col-span-2 rounded-xl border border-border/80 bg-secondary/20 p-4">
+              <label className="flex items-center gap-3 text-sm font-medium">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-border bg-background"
+                  checked={repaymentEnabled}
+                  disabled={activeLoans.length === 0}
+                  onChange={(event) => form.setValue("loanId", event.target.checked ? activeLoans[0]?.id ?? "" : "")}
+                />
+                Este gasto es una devolución de préstamo
+              </label>
+              {activeLoans.length === 0 && <p className="mt-3 text-xs text-muted-foreground">No hay préstamos activos disponibles.</p>}
+              {repaymentEnabled && (
+                <div className="mt-3 grid gap-2">
+                  <Select value={loanId} onChange={(event) => form.setValue("loanId", event.target.value, { shouldValidate: true })}>
+                    <option value="">Selecciona un préstamo</option>
+                    {activeLoans.map((loan) => (
+                      <option key={loan.id} value={loan.id}>
+                        {loan.name}
+                      </option>
+                    ))}
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Al guardar este gasto, se registrará automáticamente el pago mensual del préstamo seleccionado.
+                  </p>
+                  {form.formState.errors.loanId?.message && <p className="text-xs text-danger">{form.formState.errors.loanId.message}</p>}
+                </div>
+              )}
+            </div>
+          )}
           <DatePickerField
             className="sm:col-span-2"
             value={selectedDate}

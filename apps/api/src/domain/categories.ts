@@ -23,14 +23,6 @@ export const expenseCategories = [
   "Otros",
 ] as const;
 
-export const incomeCategories = [
-  "Salario",
-  "Freelance",
-  "Inversiones",
-  "Regalos",
-  "Intereses",
-  "Promociones",
-  "Otros",
-] as const;
+export const incomeCategories = ["Salario", "Freelance", "Inversiones", "Regalos", "Intereses", "Promociones", "Otros"] as const;
 
 export const allCategories = [...incomeCategories, ...expenseCategories] as const;

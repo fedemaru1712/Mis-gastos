@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { TransactionItem } from "@personal-finance/shared";
+import { TransactionItem } from "@/domain";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -72,6 +72,7 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
               <div className="min-w-0">
                 <p className="font-medium">{item.category}</p>
                 <p className="text-xs text-muted-foreground">{new Date(item.date).toLocaleDateString("es-ES")}</p>
+                {item.loanId && <p className="text-xs text-primary">Devolución de préstamo</p>}
                 {item.bankAccountId && (
                   <p className="text-xs text-muted-foreground">
                     {bankNames.get(item.bankAccountId) ?? "Cuenta vinculada"}
@@ -141,7 +142,7 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
                 <TableCell>
                   {item.bankAccountId ? (bankNames.get(item.bankAccountId) ?? "Cuenta vinculada") : "-"}
                 </TableCell>
-                <TableCell>{item.description || "Sin descripción"}</TableCell>
+                <TableCell>{item.loanId ? `${item.description || "Sin descripción"} · Préstamo` : (item.description || "Sin descripción")}</TableCell>
                 <TableCell className="text-right font-semibold">{formatCurrency(item.amount)}</TableCell>
                 <TableCell>{item.bankAccountId ? formatCurrency(runningBalances.get(item.id) ?? 0) : "-"}</TableCell>
                 <TableCell className="text-right">

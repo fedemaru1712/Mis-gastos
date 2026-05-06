@@ -4,6 +4,7 @@ const transactionSchema = new Schema(
   {
     userId: { type: Types.ObjectId, ref: "User", required: true, index: true },
     bankAccountId: { type: Types.ObjectId, ref: "BankAccount" },
+    loanId: { type: Types.ObjectId, ref: "Loan" },
     type: { type: String, enum: ["income", "expense"], required: true },
     amount: { type: Number, required: true, min: 0 },
     category: { type: String, required: true },

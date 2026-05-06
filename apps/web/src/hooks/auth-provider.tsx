@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchCurrentUser, loginWithGoogle, logoutRequest } from "@/services/auth";
 import { clearStoredToken, getStoredToken, setStoredToken } from "@/services/http";
 import { AuthContext } from "@/hooks/auth-context";
-import { UserProfile } from "@personal-finance/shared";
+import { UserProfile } from "@/domain";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);

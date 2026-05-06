@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { UserProfile } from "@personal-finance/shared";
+import { UserProfile } from "@/domain";
 
 export interface AuthContextValue {
   user: UserProfile | null;

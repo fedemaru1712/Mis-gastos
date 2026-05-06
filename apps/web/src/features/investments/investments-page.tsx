@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Plus, TrendingDown, TrendingUp } from "lucide-react";
-import { InvestmentPosition } from "@personal-finance/shared";
+import { InvestmentPosition } from "@/domain";
 import { toast } from "sonner";
 import { InvestmentFormDialog } from "@/components/forms/investment-form-dialog";
 import { InvestmentMonthDialog } from "@/components/forms/investment-month-dialog";

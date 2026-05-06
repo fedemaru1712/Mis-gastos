@@ -1,5 +1,5 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { MonthlySummary } from "@personal-finance/shared";
+import { MonthlySummary } from "@/domain";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const colors = ["#0f766e", "#14b8a6", "#f59e0b", "#f97316", "#ef4444", "#6366f1"];

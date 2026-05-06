@@ -5,6 +5,7 @@ import { DashboardPage } from "@/features/dashboard/dashboard-page";
 import { LoginPage } from "@/features/auth/login-page";
 import { SettingsPage } from "@/features/auth/settings-page";
 import { InvestmentsPage } from "@/features/investments/investments-page";
+import { LoansPage } from "@/features/loans/loans-page";
 import { TransactionsPage } from "@/features/transactions/transactions-page";
 
 function ProtectedRoutes() {
@@ -34,6 +35,7 @@ export function AppRouter() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/transactions" element={<TransactionsPage />} />
         <Route path="/investments" element={<InvestmentsPage />} />
+        <Route path="/loans" element={<LoansPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} replace />} />

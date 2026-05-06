@@ -1,4 +1,4 @@
-import { MonthlySummary } from "@personal-finance/shared";
+import { MonthlySummary } from "@/domain";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/format";

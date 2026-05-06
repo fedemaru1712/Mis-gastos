@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { investmentSchema, objectIdSchema } from "@personal-finance/shared";
+import { investmentSchema, objectIdSchema } from "../domain/index.js";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware.js";
 import { Investment } from "../models/Investment.js";
 import { validateWithSchema } from "../utils/validators.js";

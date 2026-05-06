@@ -1,10 +1,11 @@
-import type { AnnualSummary } from "@personal-finance/shared";
+import type { ReactNode } from "react";
+import type { AnnualSummary } from "@/domain";
 import { ArrowDownCircle, ArrowUpCircle, Scale } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/format";
 
-export function AnnualSummaryOverview({ summary }: { summary: AnnualSummary }) {
+export function AnnualSummaryOverview({ summary, extraCard }: { summary: AnnualSummary; extraCard?: ReactNode }) {
   const items = [
     { title: "Balance anual", value: summary.balance, icon: Scale },
     { title: "Ingresos anuales", value: summary.income, icon: ArrowUpCircle },
@@ -13,7 +14,7 @@ export function AnnualSummaryOverview({ summary }: { summary: AnnualSummary }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {items.map(({ title, value, icon: Icon }) => (
           <Card key={title}>
             <CardHeader className="flex-row items-center justify-between space-y-0">
@@ -27,6 +28,7 @@ export function AnnualSummaryOverview({ summary }: { summary: AnnualSummary }) {
             </CardContent>
           </Card>
         ))}
+        {extraCard}
       </div>
       <Card>
         <CardHeader>

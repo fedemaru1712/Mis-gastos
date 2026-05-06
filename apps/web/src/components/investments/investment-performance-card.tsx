@@ -1,4 +1,4 @@
-import type { InvestmentPosition } from "@personal-finance/shared";
+import type { InvestmentPosition } from "@/domain";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";

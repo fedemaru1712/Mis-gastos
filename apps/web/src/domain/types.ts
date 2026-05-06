@@ -1,5 +1,6 @@
 export type TransactionType = "income" | "expense";
 export type InvestmentType = "stock" | "crypto" | "fund" | "etf" | "bond" | "other";
+export type LoanStatus = "active" | "paid";
 
 export interface UserProfile {
   id: string;
@@ -15,6 +16,7 @@ export interface TransactionItem {
   id: string;
   userId: string;
   bankAccountId?: string;
+  loanId?: string;
   type: TransactionType;
   amount: number;
   category: string;
@@ -54,6 +56,34 @@ export interface InvestmentPosition {
   currentValue: number;
   profitabilityAmount: number;
   profitabilityPercentage: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LoanPayment {
+  id: string;
+  loanId: string;
+  expenseId?: string;
+  amount: number;
+  paymentMonth: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Loan {
+  id: string;
+  userId: string;
+  name: string;
+  initialAmount: number;
+  monthlyPayment: number;
+  paymentDay: number;
+  startDate: string;
+  status: LoanStatus;
+  totalPaid: number;
+  remainingAmount: number;
+  progressPercentage: number;
+  paymentsCount: number;
+  lastPaymentMonth?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Landmark, Plus } from "lucide-react";
-import { BankAccount } from "@personal-finance/shared";
+import { BankAccount } from "@/domain";
 import { toast } from "sonner";
 import { BankAccountFormDialog } from "@/components/forms/bank-account-form-dialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

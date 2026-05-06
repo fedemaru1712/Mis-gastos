@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { googleAuthSchema, UserProfile } from "@personal-finance/shared";
+import { googleAuthSchema, UserProfile } from "../domain/index.js";
 import { env } from "../config/env.js";
 import { User } from "../models/User.js";
 import { requireAuth, AuthenticatedRequest } from "../middlewares/auth.middleware.js";

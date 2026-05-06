@@ -1,4 +1,4 @@
-import type { InvestmentPosition } from "@personal-finance/shared";
+import type { InvestmentPosition } from "@/domain";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency, formatPercent } from "@/lib/format";

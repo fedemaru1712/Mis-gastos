@@ -1,4 +1,4 @@
-import { allCategories, expenseCategories, incomeCategories } from "@personal-finance/shared";
+import { allCategories, expenseCategories, incomeCategories } from "@/domain";
 import { TransactionQuery } from "@/types/api";
 import { MonthPickerField } from "@/components/forms/month-picker-field";
 import { Select } from "@/components/ui/select";

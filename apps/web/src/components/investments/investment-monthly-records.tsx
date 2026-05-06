@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import type { InvestmentPosition } from "@personal-finance/shared";
+import type { InvestmentPosition } from "@/domain";
 import { Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import type { InvestmentPosition } from "@personal-finance/shared";
+import type { InvestmentPosition } from "@/domain";
 import { MonthPickerField } from "@/components/forms/month-picker-field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

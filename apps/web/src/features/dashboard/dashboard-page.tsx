@@ -2,12 +2,14 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AnnualSummaryOverview } from "@/components/dashboard/annual-summary-overview";
 import { ExpenseChart } from "@/components/dashboard/expense-chart";
+import { LoansSummaryCard } from "@/components/dashboard/loans-summary-card";
 import { MonthlyCashflowChart } from "@/components/dashboard/monthly-cashflow-chart";
 import { RecentTransactions } from "@/components/dashboard/recent-transactions";
 import { SummaryCards } from "@/components/dashboard/summary-cards";
 import { MonthPickerField } from "@/components/forms/month-picker-field";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useLoansQuery } from "@/hooks/use-loans";
 import { fetchInvestments } from "@/services/investments";
 import { fetchAnnualSummary, fetchMonthlySummary } from "@/services/summary";
 
@@ -24,6 +26,7 @@ export function DashboardPage() {
   const monthlyQuery = useQuery({ queryKey: ["summary", month], queryFn: () => fetchMonthlySummary(month) });
   const annualQuery = useQuery({ queryKey: ["summary", "annual", year], queryFn: () => fetchAnnualSummary(year) });
   const investmentsQuery = useQuery({ queryKey: ["investments"], queryFn: fetchInvestments });
+  const loansQuery = useLoansQuery();
   const content = useMemo(() => {
     if (monthlyQuery.isPending || annualQuery.isPending) {
       return (
@@ -56,7 +59,16 @@ export function DashboardPage() {
           <MonthlyCashflowChart summary={monthlyQuery.data} />
           <ExpenseChart summary={monthlyQuery.data} />
         </div>
-        <AnnualSummaryOverview summary={annualQuery.data} />
+        <AnnualSummaryOverview
+          summary={annualQuery.data}
+          extraCard={
+            <LoansSummaryCard
+              loans={loansQuery.data?.items}
+              isLoading={loansQuery.isPending}
+              errorMessage={loansQuery.isError ? loansQuery.error.message : null}
+            />
+          }
+        />
         <RecentTransactions summary={monthlyQuery.data} />
       </div>
     );
@@ -66,6 +78,10 @@ export function DashboardPage() {
     annualQuery.isError,
     annualQuery.isPending,
     investmentsQuery.data,
+    loansQuery.data?.items,
+    loansQuery.error,
+    loansQuery.isError,
+    loansQuery.isPending,
     monthlyQuery.data,
     monthlyQuery.error,
     monthlyQuery.isError,

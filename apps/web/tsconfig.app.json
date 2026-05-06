@@ -16,8 +16,7 @@
     "jsx": "react-jsx",
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["./*"],
-      "@personal-finance/shared": ["../../../packages/shared/src/index.ts"]
+      "@/*": ["./*"]
     },
 
     /* Linting */

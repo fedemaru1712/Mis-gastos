@@ -4,7 +4,13 @@ import { app } from "./app.js";
 
 async function bootstrap() {
   const server = app.listen(env.PORT, "0.0.0.0", () => {
-    console.log(`API listening on http://0.0.0.0:${env.PORT}`);
+    console.log(`API listening on http://localhost:${env.PORT}`);
+    console.log(`Health endpoint available at http://localhost:${env.PORT}/health`);
+  });
+
+  server.on("error", (error) => {
+    console.error(`Failed to bind API server on port ${env.PORT}`, error);
+    process.exit(1);
   });
 
   try {
@@ -12,9 +18,7 @@ async function bootstrap() {
     console.log("MongoDB connected");
   } catch (error) {
     console.error("Failed to connect database", error);
-    server.close(() => {
-      process.exit(1);
-    });
+    console.warn(`API remains available at http://localhost:${env.PORT}/health while the database is unavailable`);
   }
 }
 

@@ -1,4 +1,4 @@
-import type { InvestmentPosition } from "@personal-finance/shared";
+import type { InvestmentPosition } from "@/domain";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency, formatPercent } from "@/lib/format";
 

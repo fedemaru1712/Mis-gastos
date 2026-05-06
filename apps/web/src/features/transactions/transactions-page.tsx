@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
-import { TransactionItem } from "@personal-finance/shared";
+import { TransactionItem } from "@/domain";
 import { TransactionFormDialog } from "@/components/forms/transaction-form-dialog";
 import { TransactionFilters } from "@/components/transactions/transaction-filters";
 import { TransactionTable } from "@/components/transactions/transaction-table";

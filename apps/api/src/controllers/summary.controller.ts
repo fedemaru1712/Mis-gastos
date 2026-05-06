@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { monthParamSchema, yearParamSchema } from "@personal-finance/shared";
+import { monthParamSchema, yearParamSchema } from "../domain/index.js";
 import { Types } from "mongoose";
 import { AuthenticatedRequest } from "../middlewares/auth.middleware.js";
 import { BankAccount } from "../models/BankAccount.js";
