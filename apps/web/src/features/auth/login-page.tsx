@@ -1,5 +1,5 @@
 import { GoogleLogin } from "@react-oauth/google";
-import { LoaderCircle, Wallet } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useBackendReadiness } from "@/hooks/use-backend-readiness";
@@ -14,15 +14,13 @@ export function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md border-border/80 bg-card/95 shadow-2xl shadow-black/20">
+      <Card className="w-full max-w-md bg-card shadow-2xl shadow-black/20">
         <CardHeader className="items-center text-center">
-          <div className="mb-2 rounded-3xl bg-primary p-4 text-primary-foreground shadow-soft">
-            <Wallet className="h-8 w-8" />
-          </div>
-          <CardTitle className="text-3xl">Controla tus ingresos y gastos</CardTitle>
+          <img src="/icons/logo-n.png" alt="NORTH" className="mb-2 h-12 w-auto object-contain" />
+          <CardTitle className="text-3xl">NORTH</CardTitle>
           <CardDescription>
             {isReady
-              ? "Inicia sesión con Google para acceder a tu dashboard personal y gestionar solo tus datos."
+              ? "Inicia sesión con Google para acceder a NORTH y gestionar solo tus datos financieros."
               : "Estamos despertando el servidor para que el acceso funcione correctamente."}
           </CardDescription>
         </CardHeader>
@@ -30,8 +28,8 @@ export function LoginPage() {
           {env.googleClientId ? (
             <div className="space-y-3">
               {!isReady && (
-                <div className="rounded-3xl border border-border/80 bg-secondary/35 p-4">
-                  <div className="flex items-start gap-3 rounded-2xl border border-dashed border-border/70 bg-background/70 p-4">
+                <div className="rounded-3xl bg-secondary/35 p-4">
+                  <div className="flex items-start gap-3 rounded-2xl bg-background/70 p-4">
                     <LoaderCircle className="mt-0.5 h-5 w-5 shrink-0 animate-spin text-primary" />
                     <div className="space-y-1">
                       <p className="text-sm font-semibold text-foreground">{message}</p>
@@ -61,7 +59,7 @@ export function LoginPage() {
                           try {
                             await signInWithGoogle(credentialResponse.credential);
                             toast.success("Sesión iniciada correctamente");
-                            navigate("/dashboard", { replace: true });
+                            navigate("/", { replace: true });
                           } catch (error) {
                             toast.error(error instanceof Error ? error.message : "No se pudo iniciar sesión");
                           }

@@ -65,7 +65,7 @@ export function InvestmentFormDialog({ open, investment, onOpenChange, onSubmit 
           </DialogDescription>
         </DialogHeader>
         <form className="grid gap-4" onSubmit={form.handleSubmit(submitPlan)}>
-          <div className="rounded-xl border border-border/80 bg-card/70 p-4">
+          <div className="rounded-xl border border-[#101010] bg-card p-4">
             <div className="grid gap-4">
               <label className="grid gap-2 text-sm">
                 <span className="font-medium">Nombre del plan</span>

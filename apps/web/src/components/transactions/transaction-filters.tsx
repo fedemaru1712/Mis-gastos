@@ -13,7 +13,7 @@ export function TransactionFilters({ filters, onChange }: Props) {
     filters.type === "income" ? incomeCategories : filters.type === "expense" ? expenseCategories : allCategories;
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-2 rounded-[18px] bg-secondary/45 p-3 sm:grid-cols-2 lg:grid-cols-3">
       <Select
         value={filters.type ?? "all"}
         onChange={(event) =>

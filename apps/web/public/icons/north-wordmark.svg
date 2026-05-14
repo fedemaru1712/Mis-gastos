@@ -1,0 +1,17 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="300" fill="#000000"/>
+  <line x1="360" y1="95" x2="840" y2="95" stroke="#EAEAEA" stroke-width="2" opacity="0.9"/>
+  <line x1="600" y1="60" x2="600" y2="95" stroke="#EAEAEA" stroke-width="6" stroke-linecap="round"/>
+  <text
+    x="600"
+    y="210"
+    text-anchor="middle"
+    fill="#F5F5F5"
+    font-family="Helvetica Neue, Arial, sans-serif"
+    font-size="110"
+    font-weight="300"
+    letter-spacing="28"
+  >
+    NORTH
+  </text>
+</svg>

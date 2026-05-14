@@ -13,6 +13,7 @@ import {
 import { fetchBankAccounts } from "@/services/bank-accounts";
 import { fetchTransactions } from "@/services/transactions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { getCategoryTone } from "@/lib/category-colors";
 import { formatCurrency } from "@/lib/format";
 
 interface Props {
@@ -65,12 +66,15 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
 
   return (
     <>
-      <div className="space-y-3 md:hidden">
+      <div className="space-y-2 md:hidden">
         {items.map((item) => (
-          <div key={item.id} className="rounded-lg border border-border bg-secondary/40 p-4">
-            <div className="mb-3 flex items-start justify-between gap-3">
+          <div key={item.id} className="rounded-[18px] bg-secondary/45 p-3.5">
+            <div className="mb-2.5 flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="font-medium">{item.category}</p>
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: getCategoryTone(item.category).dot }} />
+                  <p className={`font-medium ${getCategoryTone(item.category).text}`}>{item.category}</p>
+                </div>
                 <p className="text-xs text-muted-foreground">{new Date(item.date).toLocaleDateString("es-ES")}</p>
                 {item.loanId && <p className="text-xs text-primary">Devolución de préstamo</p>}
                 {item.bankAccountId && (
@@ -81,7 +85,7 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
               </div>
               <Badge variant={item.type}>{item.type === "income" ? "Ingreso" : "Gasto"}</Badge>
             </div>
-            <div className="mb-3 grid grid-cols-2 gap-3 text-sm">
+             <div className="mb-2.5 grid grid-cols-2 gap-3 text-sm">
               <div>
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Cantidad</p>
                 <p className="mt-1 font-semibold">{formatCurrency(item.amount)}</p>
@@ -93,7 +97,7 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
                 </p>
               </div>
             </div>
-            <p className="mb-3 text-sm text-muted-foreground">{item.description || "Sin descripción"}</p>
+             <p className="mb-2.5 text-sm text-muted-foreground">{item.description || "Sin descripción"}</p>
             <div className="flex justify-end">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -118,9 +122,9 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
       </div>
 
       <div className="hidden md:block">
-        <Table>
+        <Table className="overflow-hidden rounded-[18px] bg-secondary/20">
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-secondary/35">
               <TableHead>Fecha</TableHead>
               <TableHead>Tipo</TableHead>
               <TableHead>Categoría</TableHead>
@@ -138,7 +142,12 @@ export function TransactionTable({ items, onEdit, onDelete }: Props) {
                 <TableCell>
                   <Badge variant={item.type}>{item.type === "income" ? "Ingreso" : "Gasto"}</Badge>
                 </TableCell>
-                <TableCell>{item.category}</TableCell>
+                <TableCell>
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: getCategoryTone(item.category).dot }} />
+                    <span className={getCategoryTone(item.category).text}>{item.category}</span>
+                  </span>
+                </TableCell>
                 <TableCell>
                   {item.bankAccountId ? (bankNames.get(item.bankAccountId) ?? "Cuenta vinculada") : "-"}
                 </TableCell>

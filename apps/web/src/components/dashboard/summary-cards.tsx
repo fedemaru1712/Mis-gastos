@@ -26,15 +26,15 @@ export function SummaryCards({
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-4">
       {items.map(({ title, value, icon: Icon, valueClassName }) => (
-        <Card key={title}>
-          <CardHeader className="flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-sm text-muted-foreground">{title}</CardTitle>
-            <Icon className="h-5 w-5 text-primary" />
+        <Card key={title} className="bg-card">
+          <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{title}</CardTitle>
+            <Icon className="h-3.5 w-3.5 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <p className={`text-3xl font-semibold ${valueClassName}`}>{formatCurrency(value)}</p>
+            <p className={`text-[28px] font-semibold tracking-tight ${valueClassName}`}>{formatCurrency(value)}</p>
           </CardContent>
         </Card>
       ))}

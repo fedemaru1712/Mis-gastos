@@ -4,7 +4,7 @@ import type { InvestmentPosition } from "@/domain";
 import { Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
 import { formatCurrency, formatPercent } from "@/lib/format";
 
@@ -32,13 +32,12 @@ export function InvestmentMonthlyRecords({
   onEditMonth: (month: string) => void;
 }) {
   return (
-    <Card className="border-border/80 bg-card/95">
-      <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+    <Card className="bg-card">
+      <CardHeader className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <CardTitle>Registro mensual</CardTitle>
-          <CardDescription>Cierres del plan con filtros por año y orden.</CardDescription>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:flex">
+        <div className="grid gap-2 sm:grid-cols-2 lg:flex">
           <Select value={year} onChange={(event) => onYearChange(event.target.value)} className="min-w-[9rem]">
             <option value="all">Todos los años</option>
             {years.map((item) => (
@@ -62,9 +61,9 @@ export function InvestmentMonthlyRecords({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="hidden overflow-hidden rounded-xl border border-border/80 lg:block">
+        <div className="hidden overflow-hidden rounded-[18px] bg-secondary/18 lg:block">
           <table className="w-full text-sm">
-            <thead className="bg-secondary/60 text-left text-muted-foreground">
+            <thead className="bg-secondary/35 text-left text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-medium">Mes</th>
                 <th className="px-4 py-3 font-medium">Aportación</th>
@@ -76,7 +75,7 @@ export function InvestmentMonthlyRecords({
             </thead>
             <tbody>
               {entries.map((entry) => (
-                <tr key={entry.month} className="border-t border-border/70">
+                <tr key={entry.month}>
                   <td className="px-4 py-3 capitalize">{formatMonth(entry.month)}</td>
                   <td className="px-4 py-3">{formatCurrency(entry.contribution)}</td>
                   <td className="px-4 py-3">{formatCurrency(entry.endOfMonthValue)}</td>
@@ -91,8 +90,8 @@ export function InvestmentMonthlyRecords({
                     <Badge
                       className={
                         entry.profitabilityPercentage >= 0
-                          ? "bg-emerald-500/15 text-emerald-400"
-                          : "bg-rose-500/15 text-rose-400"
+                          ? "bg-emerald-500/10 text-emerald-300"
+                          : "bg-rose-500/10 text-rose-300"
                       }
                     >
                       {formatPercent(entry.profitabilityPercentage)}
@@ -108,9 +107,9 @@ export function InvestmentMonthlyRecords({
             </tbody>
           </table>
         </div>
-        <div className="space-y-3 lg:hidden">
+        <div className="space-y-2 lg:hidden">
           {entries.map((entry) => (
-            <div key={entry.month} className="rounded-xl border border-border/80 bg-secondary/20 p-4">
+            <div key={entry.month} className="rounded-[18px] bg-secondary/45 p-3.5">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold capitalize">{formatMonth(entry.month)}</p>
@@ -119,8 +118,8 @@ export function InvestmentMonthlyRecords({
                 <Badge
                   className={
                     entry.profitabilityPercentage >= 0
-                      ? "bg-emerald-500/15 text-emerald-400"
-                      : "bg-rose-500/15 text-rose-400"
+                      ? "bg-emerald-500/10 text-emerald-300"
+                      : "bg-rose-500/10 text-rose-300"
                   }
                 >
                   {formatPercent(entry.profitabilityPercentage)}
@@ -135,7 +134,7 @@ export function InvestmentMonthlyRecords({
                   <p className="text-xs text-muted-foreground">Resultado</p>
                   <p
                     className={
-                      entry.profitabilityAmount >= 0 ? "font-semibold text-emerald-400" : "font-semibold text-rose-400"
+                      entry.profitabilityAmount >= 0 ? "font-semibold text-emerald-300" : "font-semibold text-rose-300"
                     }
                   >
                     {formatCurrency(entry.profitabilityAmount)}

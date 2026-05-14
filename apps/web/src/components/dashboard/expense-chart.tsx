@@ -1,36 +1,51 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { MonthlySummary } from "@/domain";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-const colors = ["#0f766e", "#14b8a6", "#f59e0b", "#f97316", "#ef4444", "#6366f1"];
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatCurrency } from "@/lib/format";
+import { getCategoryTone } from "@/lib/category-colors";
 
 export function ExpenseChart({ summary }: { summary: MonthlySummary }) {
   return (
-    <Card>
-      <CardHeader>
+    <Card className="bg-card">
+      <CardHeader className="pb-2">
         <CardTitle>Gastos por categoría</CardTitle>
-        <CardDescription>Distribución de gastos del mes seleccionado.</CardDescription>
       </CardHeader>
-      <CardContent className="h-80">
+      <CardContent>
         {summary.expenseByCategory.length ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={summary.expenseByCategory}
-                dataKey="total"
-                nameKey="category"
-                innerRadius={70}
-                outerRadius={110}
-              >
-                {summary.expenseByCategory.map((entry, index) => (
-                  <Cell key={entry.category} fill={colors[index % colors.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+          <div className="relative h-[21.5rem] sm:h-[24rem]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+                <Pie
+                  data={summary.expenseByCategory}
+                  dataKey="total"
+                  nameKey="category"
+                  innerRadius={86}
+                  outerRadius={122}
+                  paddingAngle={2}
+                  stroke="none"
+                >
+                  {summary.expenseByCategory.map((entry, index) => (
+                    <Cell key={`${entry.category}-${index}`} fill={getCategoryTone(entry.category).chart} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  formatter={(value) => formatCurrency(Number(value ?? 0))}
+                  contentStyle={{
+                    backgroundColor: "#000000",
+                    borderRadius: 18,
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Total gasto</span>
+              <span className="mt-2 text-3xl font-semibold tracking-tight text-white">
+                {formatCurrency(summary.expense)}
+              </span>
+            </div>
+          </div>
         ) : (
-          <div className="flex h-full items-center justify-center rounded-2xl bg-secondary text-sm text-muted-foreground">
+          <div className="flex h-[21.5rem] items-center justify-center rounded-3xl bg-secondary/55 text-sm text-muted-foreground sm:h-[24rem]">
             No hay gastos cargados este mes.
           </div>
         )}

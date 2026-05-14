@@ -13,7 +13,7 @@ export function Progress({ value, className, indicatorClassName, label, labelCla
   const safeValue = Math.max(0, Math.min(value, 100));
 
   return (
-    <div className={cn("relative h-2 w-full overflow-hidden rounded-full bg-secondary", className)}>
+    <div className={cn("relative h-2 w-full overflow-hidden rounded-full bg-secondary/90", className)}>
       <div
         className={cn("h-full rounded-full bg-primary transition-[width] duration-300 ease-out", indicatorClassName)}
         style={{ width: `${safeValue}%` }}

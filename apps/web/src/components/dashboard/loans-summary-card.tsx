@@ -17,10 +17,10 @@ export function LoansSummaryCard({ loans, isLoading, errorMessage }: Props) {
 
   if (isLoading) {
     return (
-      <Card className="border-border/80 bg-card/95">
-        <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-sm text-muted-foreground">Préstamos</CardTitle>
-          <Landmark className="h-5 w-5 text-primary" />
+      <Card className="bg-card">
+        <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
+          <CardTitle className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Préstamos</CardTitle>
+          <Landmark className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">Cargando préstamos...</p>
@@ -31,10 +31,10 @@ export function LoansSummaryCard({ loans, isLoading, errorMessage }: Props) {
 
   if (errorMessage) {
     return (
-      <Card className="border-border/80 bg-card/95">
-        <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-sm text-muted-foreground">Préstamos</CardTitle>
-          <Landmark className="h-5 w-5 text-primary" />
+      <Card className="bg-card">
+        <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
+          <CardTitle className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Préstamos</CardTitle>
+          <Landmark className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <p className="text-sm text-danger">{errorMessage}</p>
@@ -46,7 +46,7 @@ export function LoansSummaryCard({ loans, isLoading, errorMessage }: Props) {
   if (!loans?.length) {
     return (
       <Card
-        className="border-border/80 bg-card/95 transition-colors hover:border-primary/40 hover:bg-card"
+        className="bg-card transition-colors hover:bg-card"
         role="button"
         tabIndex={0}
         onClick={() => navigate("/loans")}
@@ -57,9 +57,9 @@ export function LoansSummaryCard({ loans, isLoading, errorMessage }: Props) {
           }
         }}
       >
-        <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-sm text-muted-foreground">Préstamos</CardTitle>
-          <Landmark className="h-5 w-5 text-primary" />
+        <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
+          <CardTitle className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Préstamos</CardTitle>
+          <Landmark className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-start justify-between gap-3">
@@ -79,7 +79,7 @@ export function LoansSummaryCard({ loans, isLoading, errorMessage }: Props) {
 
   return (
     <Card
-      className="border-border/80 bg-card/95 transition-colors hover:border-primary/40 hover:bg-card"
+        className="bg-card transition-colors hover:bg-card"
       role="button"
       tabIndex={0}
       onClick={() => navigate("/loans")}
@@ -90,9 +90,9 @@ export function LoansSummaryCard({ loans, isLoading, errorMessage }: Props) {
         }
       }}
     >
-      <CardHeader className="flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-sm text-muted-foreground">Préstamos</CardTitle>
-        <Landmark className="h-5 w-5 text-primary" />
+      <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
+        <CardTitle className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Préstamos</CardTitle>
+        <Landmark className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex min-w-0 items-start justify-between gap-3">

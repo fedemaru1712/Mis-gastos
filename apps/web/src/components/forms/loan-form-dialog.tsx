@@ -94,7 +94,7 @@ export function LoanFormDialog({ open, loan, onOpenChange, onSubmit }: Props) {
               <FieldError message={form.formState.errors.startDate?.message} />
             </label>
           </div>
-          <div className="rounded-xl border border-border/80 bg-secondary/30 p-4 text-sm">
+          <div className="rounded-xl bg-secondary/30 p-4 text-sm">
             <p className="text-muted-foreground">Resumen inicial</p>
             <div className="mt-2 flex flex-wrap items-center gap-4">
               <p>

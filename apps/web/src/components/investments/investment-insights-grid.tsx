@@ -38,14 +38,14 @@ export function InvestmentInsightsGrid({
   ];
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
       {cards.map((card) => (
-        <Card key={card.label} className="border-border/80 bg-card/95">
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">{card.label}</CardTitle>
+        <Card key={card.label} className="bg-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{card.label}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold">{card.value}</p>
+            <p className="text-xl font-semibold tracking-tight">{card.value}</p>
             <p className="mt-1 text-xs text-muted-foreground">{card.helper}</p>
           </CardContent>
         </Card>

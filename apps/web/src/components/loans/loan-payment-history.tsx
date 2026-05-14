@@ -27,22 +27,22 @@ export function LoanPaymentHistory({ payments, onEdit, onDelete }: Props) {
   }, []);
 
   return (
-    <Card className="border-border/80 bg-card/95">
+    <Card className="bg-card">
       <CardHeader>
         <CardTitle>Historial de pagos</CardTitle>
         <CardDescription>Edita o elimina pagos mensuales y el préstamo se recalculará automáticamente.</CardDescription>
       </CardHeader>
       <CardContent>
         {payments.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border/80 bg-secondary/20 p-6 text-sm text-muted-foreground">
+          <div className="rounded-3xl bg-secondary/35 p-6 text-sm text-muted-foreground">
             Todavía no hay pagos registrados para este préstamo.
           </div>
         ) : (
           <>
             <div className="hidden md:block">
-              <Table>
+              <Table className="overflow-hidden rounded-3xl bg-secondary/25">
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-secondary/45">
                     <TableHead>Mes</TableHead>
                     <TableHead>Origen</TableHead>
                     <TableHead className="text-right">Importe</TableHead>
@@ -80,7 +80,7 @@ export function LoanPaymentHistory({ payments, onEdit, onDelete }: Props) {
             </div>
             <div className="space-y-3 md:hidden">
               {rows.map(({ payment, runningPaid }) => (
-                <div key={payment.id} className="rounded-xl border border-border/80 bg-secondary/20 p-4">
+                <div key={payment.id} className="rounded-3xl bg-secondary/45 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-sm font-semibold capitalize">{formatPeriod(payment.paymentMonth)}</p>

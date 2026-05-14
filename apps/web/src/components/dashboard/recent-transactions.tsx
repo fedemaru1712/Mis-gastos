@@ -1,23 +1,26 @@
 import { MonthlySummary } from "@/domain";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/format";
+import { getCategoryTone } from "@/lib/category-colors";
 
 export function RecentTransactions({ summary }: { summary: MonthlySummary }) {
   const recentItems = summary.recentTransactions.slice(0, 3);
 
   return (
-    <Card>
+    <Card className="bg-card">
       <CardHeader>
         <CardTitle>Últimos movimientos</CardTitle>
-        <CardDescription>Los 3 movimientos más recientes del mes.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         {recentItems.length ? (
           recentItems.map((item) => (
-            <div key={item.id} className="flex items-center justify-between rounded-2xl bg-secondary px-4 py-3">
+            <div key={item.id} className="flex items-center justify-between rounded-3xl bg-secondary/50 px-4 py-4">
               <div>
-                <p className="font-medium">{item.category}</p>
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: getCategoryTone(item.category).dot }} />
+                  <p className={`font-medium ${getCategoryTone(item.category).text}`}>{item.category}</p>
+                </div>
                 <p className="text-sm text-muted-foreground">{item.description || "Sin descripción"}</p>
               </div>
               <div className="text-right">
@@ -29,7 +32,7 @@ export function RecentTransactions({ summary }: { summary: MonthlySummary }) {
             </div>
           ))
         ) : (
-          <div className="rounded-2xl bg-secondary p-4 text-sm text-muted-foreground">
+          <div className="rounded-3xl bg-secondary/50 p-4 text-sm text-muted-foreground">
             Aún no hay movimientos para este mes.
           </div>
         )}

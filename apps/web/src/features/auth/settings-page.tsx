@@ -4,7 +4,7 @@ import { Landmark, Plus } from "lucide-react";
 import { BankAccount } from "@/domain";
 import { toast } from "sonner";
 import { BankAccountFormDialog } from "@/components/forms/bank-account-form-dialog";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { formatCurrency } from "@/lib/format";
@@ -38,19 +38,22 @@ export function SettingsPage() {
   });
 
   return (
-    <section className="space-y-6">
-      <Card>
+    <section className="space-y-4">
+      <div className="hidden lg:block">
+        <h2 className="mt-1.5 text-[28px] font-semibold tracking-tight">Ajustes y cuentas</h2>
+      </div>
+
+      <Card className="bg-card">
         <CardHeader>
           <CardTitle>Ajustes</CardTitle>
-          <CardDescription>Información básica de tu cuenta autenticada con Google.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl bg-secondary p-4">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl bg-secondary/55 p-3.5">
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Nombre</p>
               <p className="mt-2 font-semibold">{user?.name}</p>
             </div>
-            <div className="rounded-2xl bg-secondary p-4">
+            <div className="rounded-2xl bg-secondary/55 p-3.5">
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Email</p>
               <p className="mt-2 font-semibold">{user?.email}</p>
             </div>
@@ -60,11 +63,10 @@ export function SettingsPage() {
           </Button>
         </CardContent>
       </Card>
-      <Card>
-        <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <Card className="bg-card">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <CardTitle>Cuentas bancarias</CardTitle>
-            <CardDescription>Clasifica movimientos por banco o cuenta.</CardDescription>
           </div>
           <Button className="w-full sm:w-auto" onClick={() => setOpen(true)}>
             <Plus className="h-4 w-4" />
@@ -75,14 +77,14 @@ export function SettingsPage() {
           {accountsQuery.isPending && <p className="text-sm text-muted-foreground">Cargando cuentas...</p>}
           {accountsQuery.isError && <p className="text-sm text-danger">{accountsQuery.error.message}</p>}
           {accountsQuery.data && accountsQuery.data.items.length === 0 && (
-            <div className="rounded-lg bg-secondary p-4 text-sm text-muted-foreground">
+            <div className="rounded-3xl bg-secondary/45 p-4 text-sm text-muted-foreground">
               Aún no hay cuentas bancarias creadas.
             </div>
           )}
           {accountsQuery.data && accountsQuery.data.items.length > 0 && (
             <div className="grid gap-4 md:grid-cols-2">
               {accountsQuery.data.items.map((account) => (
-                <div key={account.id} className="rounded-lg border border-border bg-secondary/30 p-4">
+                <div key={account.id} className="rounded-[18px] bg-secondary/40 p-3.5">
                   <div className="mb-3 flex items-start justify-between gap-3">
                     <div>
                       <p className="font-semibold">{account.bankName}</p>

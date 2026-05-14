@@ -6,7 +6,7 @@ import type { InvestmentPosition } from "@/domain";
 import { MonthPickerField } from "@/components/forms/month-picker-field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 const monthEntrySchema = z.object({
   month: z.string().regex(/^\d{4}-\d{2}$/),
@@ -78,9 +78,6 @@ export function InvestmentMonthDialog({ open, investment, monthEntry, onOpenChan
       <DialogContent className="sm:w-[min(calc(100vw-2rem),36rem)]">
         <DialogHeader>
           <DialogTitle>{monthEntry ? "Editar mes" : "Añadir mes"}</DialogTitle>
-          <DialogDescription>
-            Registra la aportación del mes y el valor total de tu cartera al cierre para calcular la rentabilidad.
-          </DialogDescription>
         </DialogHeader>
         <form className="grid gap-4" onSubmit={form.handleSubmit(async (values) => onSubmit(values))}>
           <div className="grid gap-4 sm:grid-cols-3">
@@ -97,7 +94,7 @@ export function InvestmentMonthDialog({ open, investment, monthEntry, onOpenChan
               <Input type="number" step="0.01" {...form.register("endOfMonthValue", { valueAsNumber: true })} />
             </label>
           </div>
-          <div className="rounded-xl border border-border/80 bg-secondary/40 p-4">
+          <div className="rounded-xl bg-secondary/40 p-4">
             <p className="text-sm font-semibold">Preview en tiempo real</p>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <div>

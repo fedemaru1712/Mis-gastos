@@ -27,7 +27,7 @@ export function PopoverContent({ className, ...props }: PopoverPrimitive.Popover
         sideOffset={8}
         align="start"
         className={cn(
-          "z-50 w-auto min-w-[18rem] rounded-xl border border-border bg-card p-0 text-card-foreground shadow-soft outline-none",
+          "z-50 w-auto min-w-[18rem] rounded-xl border border-[#101010] bg-card p-0 text-card-foreground shadow-soft outline-none",
           className,
         )}
         {...props}

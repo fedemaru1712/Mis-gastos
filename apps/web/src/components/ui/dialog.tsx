@@ -25,11 +25,11 @@ export function DialogContent({ className, ...props }: DialogPrimitive.DialogCon
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm" />
-      <DialogPrimitive.Content
-        className={cn(
-          "fixed inset-x-3 top-[max(0.75rem,env(safe-area-inset-top))] bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-50 flex max-w-full flex-col overflow-hidden rounded-xl border border-border bg-card p-4 shadow-soft sm:left-1/2 sm:right-auto sm:top-1/2 sm:bottom-auto sm:max-h-[calc(100dvh-3rem)] sm:w-[min(calc(100vw-2rem),42rem)] sm:max-w-[calc(100vw-2rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:p-6",
-          className,
-        )}
+        <DialogPrimitive.Content
+          className={cn(
+            "fixed inset-x-3 top-[max(0.75rem,env(safe-area-inset-top))] bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-50 flex max-w-full flex-col overflow-hidden rounded-[18px] border border-[#101010] bg-card p-4 shadow-soft sm:left-1/2 sm:right-auto sm:top-1/2 sm:bottom-auto sm:max-h-[calc(100dvh-3rem)] sm:w-[min(calc(100vw-2rem),42rem)] sm:max-w-[calc(100vw-2rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:p-5",
+            className,
+          )}
         {...props}
       >
         {props.children}

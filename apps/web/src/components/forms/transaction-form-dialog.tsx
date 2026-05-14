@@ -5,7 +5,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { expenseCategories, incomeCategories, transactionSchema, TransactionItem } from "@/domain";
 import { Button } from "@/components/ui/button";
 import { DatePickerField } from "@/components/forms/date-picker-field";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { fetchBankAccounts } from "@/services/bank-accounts";
@@ -78,7 +78,6 @@ export function TransactionFormDialog({ open, transaction, onOpenChange, onSubmi
       <DialogContent className="w-[calc(100vw-24px)] max-w-full max-sm:max-h-[calc(100dvh-24px)]">
         <DialogHeader>
           <DialogTitle>{transaction ? "Editar movimiento" : "Nuevo movimiento"}</DialogTitle>
-          <DialogDescription>Registra ingresos y gastos con validación compartida.</DialogDescription>
         </DialogHeader>
         <form className="flex min-h-0 flex-1 flex-col" onSubmit={form.handleSubmit(async (values) => onSubmit(values))}>
           <div className="grid min-h-0 gap-4 overflow-y-auto pr-1 sm:grid-cols-2">
@@ -109,21 +108,29 @@ export function TransactionFormDialog({ open, transaction, onOpenChange, onSubmi
               ))}
             </Select>
             {showLoanRepaymentOption && (
-              <div className="min-w-0 sm:col-span-2 rounded-xl border border-border/80 bg-secondary/20 p-4">
+              <div className="min-w-0 sm:col-span-2 rounded-xl bg-secondary/20 p-4">
                 <label className="flex items-center gap-3 text-sm font-medium">
                   <input
                     type="checkbox"
-                    className="h-4 w-4 rounded border-border bg-background"
+                    className="h-4 w-4 rounded bg-background"
                     checked={repaymentEnabled}
                     disabled={activeLoans.length === 0}
-                    onChange={(event) => form.setValue("loanId", event.target.checked ? activeLoans[0]?.id ?? "" : "")}
+                    onChange={(event) =>
+                      form.setValue("loanId", event.target.checked ? (activeLoans[0]?.id ?? "") : "")
+                    }
                   />
                   <span className="min-w-0">Este gasto es una devolución de préstamo</span>
                 </label>
-                {activeLoans.length === 0 && <p className="mt-3 text-xs text-muted-foreground">No hay préstamos activos disponibles.</p>}
+                {activeLoans.length === 0 && (
+                  <p className="mt-3 text-xs text-muted-foreground">No hay préstamos activos disponibles.</p>
+                )}
                 {repaymentEnabled && (
                   <div className="mt-3 grid gap-2">
-                    <Select className="min-w-0" value={loanId} onChange={(event) => form.setValue("loanId", event.target.value, { shouldValidate: true })}>
+                    <Select
+                      className="min-w-0"
+                      value={loanId}
+                      onChange={(event) => form.setValue("loanId", event.target.value, { shouldValidate: true })}
+                    >
                       <option value="">Selecciona un préstamo</option>
                       {activeLoans.map((loan) => (
                         <option key={loan.id} value={loan.id}>
@@ -134,7 +141,9 @@ export function TransactionFormDialog({ open, transaction, onOpenChange, onSubmi
                     <p className="text-xs text-muted-foreground">
                       Al guardar este gasto, se registrará automáticamente el pago mensual del préstamo seleccionado.
                     </p>
-                    {form.formState.errors.loanId?.message && <p className="text-xs text-danger">{form.formState.errors.loanId.message}</p>}
+                    {form.formState.errors.loanId?.message && (
+                      <p className="text-xs text-danger">{form.formState.errors.loanId.message}</p>
+                    )}
                   </div>
                 )}
               </div>
@@ -144,7 +153,11 @@ export function TransactionFormDialog({ open, transaction, onOpenChange, onSubmi
               value={selectedDate}
               onChange={(value) => form.setValue("date", value)}
             />
-            <Input className="min-w-0 sm:col-span-2" placeholder="Descripción opcional" {...form.register("description")} />
+            <Input
+              className="min-w-0 sm:col-span-2"
+              placeholder="Descripción opcional"
+              {...form.register("description")}
+            />
           </div>
           <div className="mt-4 flex shrink-0 flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <Button className="w-full sm:w-auto" type="button" variant="outline" onClick={() => onOpenChange(false)}>

@@ -11,12 +11,12 @@ export function IosInstallHint() {
 
   return (
     <div className="fixed inset-x-3 bottom-24 z-50 sm:left-auto sm:right-4 sm:w-full sm:max-w-sm lg:bottom-6">
-      <div className="rounded-2xl border border-border/80 bg-card/95 p-4 shadow-2xl shadow-black/30 backdrop-blur">
+      <div className="rounded-2xl border border-[#101010] bg-card p-4 shadow-2xl shadow-black/30">
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-foreground">Instalar en iPhone</p>
+            <p className="text-sm font-semibold text-foreground">Instalar NORTH</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Para instalar la app en tu iPhone, abre Safari, pulsa Compartir y selecciona Anadir a pantalla de inicio.
+              Para instalar NORTH en tu iPhone, abre Safari, pulsa Compartir y selecciona Añadir a pantalla de inicio.
             </p>
           </div>
           <Button

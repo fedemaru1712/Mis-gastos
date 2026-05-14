@@ -17,7 +17,7 @@ export function InvestmentPerformanceCard({
   const positive = investment.profitabilityPercentage >= 0;
 
   return (
-    <Card className="overflow-hidden border-border/70 bg-secondary/20">
+    <Card className="overflow-hidden bg-secondary/20">
       <CardHeader>
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -76,8 +76,7 @@ export function InvestmentPerformanceCard({
                 ]}
                 labelFormatter={(label) => `Mes ${label}`}
                 contentStyle={{
-                  backgroundColor: "rgba(15, 23, 42, 0.96)",
-                  border: "1px solid rgba(51,65,85,1)",
+                  backgroundColor: "#000000",
                   borderRadius: 10,
                 }}
               />

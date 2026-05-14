@@ -18,7 +18,7 @@ interface Props {
 
 export function LoanList({ loans, activeLoanId, onSelect, onEdit, onAddPayment, onDelete }: Props) {
   return (
-    <Card className="border-border/80 bg-card/95">
+    <Card className="bg-card">
       <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <CardTitle>Listado de préstamos</CardTitle>
@@ -45,24 +45,24 @@ export function LoanList({ loans, activeLoanId, onSelect, onEdit, onAddPayment, 
                   }
                 }}
                 className={cn(
-                  "w-full rounded-2xl border border-border/80 bg-secondary/20 p-4 text-left transition hover:border-primary/50 hover:bg-secondary/35",
-                  isActive && "border-primary/60 bg-secondary/40 shadow-soft",
+                  "w-full rounded-3xl bg-secondary/35 p-4 text-left transition hover:bg-secondary/45",
+                  isActive && "bg-secondary/55",
                 )}
               >
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start gap-3">
-                      <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                        <Landmark className="h-5 w-5" />
-                      </div>
+                        <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-card text-primary">
+                          <Landmark className="h-5 w-5" />
+                        </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <p className="truncate text-lg font-semibold">{loan.name}</p>
                           <Badge
                             className={
                               loan.status === "paid"
-                                ? "bg-emerald-500/15 text-emerald-400"
-                                : "bg-amber-500/15 text-amber-300"
+                                ? "bg-emerald-500/10 text-emerald-300"
+                                : "bg-amber-500/10 text-amber-200"
                             }
                           >
                             {loan.status === "paid" ? "Pagado" : "Activo"}
@@ -102,8 +102,8 @@ export function LoanList({ loans, activeLoanId, onSelect, onEdit, onAddPayment, 
                       </div>
                       <Progress
                         value={loan.progressPercentage}
-                        indicatorClassName={loan.status === "paid" ? "bg-emerald-400" : undefined}
-                      />
+                         indicatorClassName={loan.status === "paid" ? "bg-emerald-300" : undefined}
+                       />
                     </div>
                   </div>
                   <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">

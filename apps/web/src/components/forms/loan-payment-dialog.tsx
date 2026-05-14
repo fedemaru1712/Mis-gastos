@@ -77,7 +77,7 @@ export function LoanPaymentDialog({ open, loan, payment, existingPayments, onOpe
             </label>
           </div>
           {loan && projection && (
-            <div className="rounded-xl border border-border/80 bg-secondary/30 p-4 text-sm">
+            <div className="rounded-xl bg-secondary/30 p-4 text-sm">
               <p className="font-semibold">Impacto estimado</p>
               <div className="mt-3 grid gap-3 sm:grid-cols-3">
                 <div>
