@@ -93,6 +93,16 @@ export interface MonthlySummary {
   income: number;
   expense: number;
   balance: number;
+  accountBalances: Array<{
+    id: string;
+    bankName: string;
+    accountName: string;
+    openingBalance: number;
+    income: number;
+    expense: number;
+    balance: number;
+    currency: string;
+  }>;
   cashflow: Array<{
     date: string;
     day: string;

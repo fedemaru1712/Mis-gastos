@@ -10,6 +10,7 @@ function serializeTransaction(item: any) {
   return {
     id: item._id.toString(),
     userId: item.userId.toString(),
+    bankAccountId: item.bankAccountId?.toString(),
     type: item.type,
     amount: item.amount,
     category: item.category,
@@ -18,6 +19,29 @@ function serializeTransaction(item: any) {
     createdAt: item.createdAt.toISOString(),
     updatedAt: item.updatedAt.toISOString(),
   };
+}
+
+function buildAccountBalances(
+  accounts: any[],
+  entries: Array<{ _id: { bankAccountId: Types.ObjectId; type: string }; total: number }>,
+) {
+  return accounts.map((account) => {
+    const accountId = account._id.toString();
+    const matchingEntries = entries.filter((entry) => entry._id.bankAccountId.toString() === accountId);
+    const income = matchingEntries.find((entry) => entry._id.type === "income")?.total ?? 0;
+    const expense = matchingEntries.find((entry) => entry._id.type === "expense")?.total ?? 0;
+
+    return {
+      id: accountId,
+      bankName: account.bankName,
+      accountName: account.accountName,
+      currency: account.currency,
+      openingBalance: account.openingBalance,
+      income,
+      expense,
+      balance: (account.openingBalance ?? 0) + income - expense,
+    };
+  });
 }
 
 function getMonthRange(month: string) {
@@ -71,7 +95,7 @@ export async function getMonthlySummary(request: AuthenticatedRequest, response:
   const { start, end } = getMonthRange(currentMonth);
   const userId = new Types.ObjectId(request.auth?.userId);
 
-  const [totals, expenses, cashflow, recentTransactions] = await Promise.all([
+  const [totals, expenses, cashflow, recentTransactions, accounts, accountTotals] = await Promise.all([
     Transaction.aggregate([
       { $match: { userId, date: { $gte: start, $lt: end } } },
       { $group: { _id: "$type", total: { $sum: "$amount" } } },
@@ -97,6 +121,19 @@ export async function getMonthlySummary(request: AuthenticatedRequest, response:
     Transaction.find({ userId, date: { $gte: start, $lt: end } })
       .sort({ date: -1, createdAt: -1 })
       .limit(5),
+    BankAccount.find({ userId }).sort({ bankName: 1, accountName: 1 }),
+    Transaction.aggregate([
+      { $match: { userId, bankAccountId: { $exists: true, $ne: null }, date: { $lt: end } } },
+      {
+        $group: {
+          _id: {
+            bankAccountId: "$bankAccountId",
+            type: "$type",
+          },
+          total: { $sum: "$amount" },
+        },
+      },
+    ]),
   ]);
 
   const income = totals.find((item) => item._id === "income")?.total ?? 0;
@@ -110,6 +147,7 @@ export async function getMonthlySummary(request: AuthenticatedRequest, response:
     cashflow: buildMonthlyCashflow(currentMonth, cashflow),
     recentTransactions: recentTransactions.map(serializeTransaction),
     expenseByCategory: expenses.map((item) => ({ category: item._id, total: item.total })),
+    accountBalances: buildAccountBalances(accounts, accountTotals),
   });
 }
 

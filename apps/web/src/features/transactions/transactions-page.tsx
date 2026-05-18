@@ -3,12 +3,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowDownRight, ArrowUpRight, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { TransactionItem } from "@/domain";
+import { AccountBalancesCard } from "@/components/dashboard/account-balances-card";
 import { TransactionFormDialog } from "@/components/forms/transaction-form-dialog";
 import { TransactionFilters } from "@/components/transactions/transaction-filters";
 import { TransactionTable } from "@/components/transactions/transaction-table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/format";
+import { fetchMonthlySummary } from "@/services/summary";
 import { createTransaction, deleteTransaction, fetchTransactions, updateTransaction } from "@/services/transactions";
 import { TransactionFormValues, TransactionQuery } from "@/types/api";
 
@@ -22,6 +24,11 @@ export function TransactionsPage() {
   const [selected, setSelected] = useState<TransactionItem | null>(null);
 
   const query = useQuery({ queryKey: ["transactions", filters], queryFn: () => fetchTransactions(filters) });
+  const summaryMonth = filters.month ?? new Date().toISOString().slice(0, 7);
+  const summaryQuery = useQuery({
+    queryKey: ["summary", summaryMonth],
+    queryFn: () => fetchMonthlySummary(summaryMonth),
+  });
   const mutation = useMutation({
     mutationFn: async (values: TransactionFormValues) => {
       if (selected) return updateTransaction(selected.id, values);
@@ -97,6 +104,23 @@ export function TransactionsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {summaryQuery.isPending && (
+        <Card className="bg-card">
+          <CardContent className="p-4 text-sm text-muted-foreground">Cargando saldos por cuenta...</CardContent>
+        </Card>
+      )}
+      {summaryQuery.isError && (
+        <Card className="bg-card">
+          <CardContent className="p-4 text-sm text-danger">{summaryQuery.error.message}</CardContent>
+        </Card>
+      )}
+      {summaryQuery.data && (
+        <AccountBalancesCard
+          summary={summaryQuery.data}
+          description={filters.month ? "Hasta el cierre del mes filtrado" : "Hasta el cierre del mes actual"}
+        />
+      )}
 
       <Card className="bg-card">
         <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

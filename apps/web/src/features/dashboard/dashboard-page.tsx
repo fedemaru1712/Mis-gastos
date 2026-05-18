@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowDownRight, ArrowUpRight, Wallet } from "lucide-react";
+import { AccountBalancesCard } from "@/components/dashboard/account-balances-card";
 import { AnnualSummaryOverview } from "@/components/dashboard/annual-summary-overview";
 import { ExpenseChart } from "@/components/dashboard/expense-chart";
 import { LoansSummaryCard } from "@/components/dashboard/loans-summary-card";
@@ -104,6 +105,7 @@ export function DashboardPage() {
           </CardContent>
         </Card>
         <SummaryCards summary={monthlyQuery.data} investmentProfitability={investmentProfitability} />
+        <AccountBalancesCard summary={monthlyQuery.data} />
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.65fr] xl:items-stretch">
           <MonthlyCashflowChart summary={monthlyQuery.data} />
           <ExpenseChart summary={monthlyQuery.data} />
