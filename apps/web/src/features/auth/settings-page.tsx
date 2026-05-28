@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Landmark, Plus } from "lucide-react";
+import { ChevronRight, Landmark, LogOut, Pencil, Plus, Trash2 } from "lucide-react";
 import { BankAccount } from "@/domain";
 import { toast } from "sonner";
 import { BankAccountFormDialog } from "@/components/forms/bank-account-form-dialog";
@@ -16,7 +16,9 @@ export function SettingsPage() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<BankAccount | null>(null);
+
   const accountsQuery = useQuery({ queryKey: ["bank-accounts"], queryFn: fetchBankAccounts });
+
   const mutation = useMutation({
     mutationFn: async (values: BankAccountFormValues) =>
       selected ? updateBankAccount(selected.id, values) : createBankAccount(values),
@@ -28,6 +30,7 @@ export function SettingsPage() {
     },
     onError: (error) => toast.error(error.message),
   });
+
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteBankAccount(id),
     onSuccess: () => {
@@ -37,78 +40,110 @@ export function SettingsPage() {
     onError: (error) => toast.error(error.message),
   });
 
+  const initials = user?.name
+    ?.split(" ")
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase() ?? "?";
+
   return (
     <section className="space-y-4">
       <div className="hidden lg:block">
-        <h2 className="mt-1.5 text-[28px] font-semibold tracking-tight">Ajustes y cuentas</h2>
+        <h2 className="mt-1.5 text-[28px] font-semibold tracking-tight">Ajustes</h2>
       </div>
 
+      {/* Profile card */}
       <Card className="bg-card">
-        <CardHeader>
-          <CardTitle>Ajustes</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl bg-secondary/55 p-3.5">
-              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Nombre</p>
-              <p className="mt-2 font-semibold">{user?.name}</p>
+        <CardContent className="p-0">
+          {/* Avatar + name */}
+          <div className="flex items-center gap-4 p-5">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-lg font-semibold">
+              {initials}
             </div>
-            <div className="rounded-2xl bg-secondary/55 p-3.5">
-              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Email</p>
-              <p className="mt-2 font-semibold">{user?.email}</p>
+            <div className="min-w-0">
+              <p className="truncate text-base font-semibold">{user?.name ?? "—"}</p>
+              <p className="truncate text-sm text-muted-foreground">{user?.email ?? "—"}</p>
             </div>
           </div>
-          <Button variant="danger" onClick={() => void signOut()}>
-            Cerrar sesión
-          </Button>
+
+          {/* Sign out row */}
+          <div className="border-t border-white/[0.05]">
+            <button
+              type="button"
+              onClick={() => void signOut()}
+              className="flex w-full items-center justify-between px-5 py-3.5 text-sm text-rose-400 transition-colors hover:text-rose-300"
+            >
+              <span className="flex items-center gap-3">
+                <LogOut className="h-4 w-4" />
+                Cerrar sesión
+              </span>
+              <ChevronRight className="h-4 w-4 opacity-40" />
+            </button>
+          </div>
         </CardContent>
       </Card>
+
+      {/* Bank accounts card */}
       <Card className="bg-card">
-        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <CardTitle>Cuentas bancarias</CardTitle>
-          </div>
-          <Button className="w-full sm:w-auto" onClick={() => setOpen(true)}>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <CardTitle>Cuentas bancarias</CardTitle>
+          <Button
+            size="sm"
+            onClick={() => {
+              setSelected(null);
+              setOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4" />
-            Nueva cuenta
+            Nueva
           </Button>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {accountsQuery.isPending && <p className="text-sm text-muted-foreground">Cargando cuentas...</p>}
-          {accountsQuery.isError && <p className="text-sm text-danger">{accountsQuery.error.message}</p>}
+        <CardContent>
+          {accountsQuery.isPending && (
+            <p className="text-sm text-muted-foreground">Cargando cuentas...</p>
+          )}
+          {accountsQuery.isError && (
+            <p className="text-sm text-danger">{accountsQuery.error.message}</p>
+          )}
           {accountsQuery.data && accountsQuery.data.items.length === 0 && (
-            <div className="rounded-3xl bg-secondary/45 p-4 text-sm text-muted-foreground">
+            <div className="rounded-2xl bg-white/[0.04] p-6 text-center text-sm text-muted-foreground">
               Aún no hay cuentas bancarias creadas.
             </div>
           )}
           {accountsQuery.data && accountsQuery.data.items.length > 0 && (
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="divide-y divide-white/[0.05]">
               {accountsQuery.data.items.map((account) => (
-                <div key={account.id} className="rounded-[18px] bg-secondary/40 p-3.5">
-                  <div className="mb-3 flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-semibold">{account.bankName}</p>
-                      <p className="text-sm text-muted-foreground">{account.accountName}</p>
-                    </div>
-                    <Landmark className="h-5 w-5 text-primary" />
+                <div key={account.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.06]">
+                    <Landmark className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <p className="mb-4 text-sm text-muted-foreground">Moneda: {account.currency}</p>
-                  <p className="mb-4 text-sm text-muted-foreground">
-                    Saldo inicial: {formatCurrency(account.openingBalance)}
-                  </p>
-                  <div className="flex gap-2">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{account.bankName}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {account.accountName} · {account.currency} · Saldo inicial{" "}
+                      {formatCurrency(account.openingBalance)}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-0.5">
                     <Button
-                      variant="outline"
-                      className="flex-1"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
                       onClick={() => {
                         setSelected(account);
                         setOpen(true);
                       }}
                     >
-                      Editar
+                      <Pencil className="h-3.5 w-3.5" />
                     </Button>
-                    <Button variant="danger" className="flex-1" onClick={() => deleteMutation.mutate(account.id)}>
-                      Eliminar
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-danger"
+                      onClick={() => deleteMutation.mutate(account.id)}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
                 </div>
@@ -117,6 +152,7 @@ export function SettingsPage() {
           )}
         </CardContent>
       </Card>
+
       <BankAccountFormDialog
         open={open}
         account={selected}

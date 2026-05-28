@@ -1,38 +1,86 @@
+import { useNavigate } from "react-router-dom";
 import { MonthlySummary } from "@/domain";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/format";
 import { getCategoryTone } from "@/lib/category-colors";
 
+function formatTransactionDate(dateString: string): string {
+  const [year, month, day] = dateString.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  if (date.getTime() === today.getTime()) return "Hoy";
+  if (date.getTime() === yesterday.getTime()) return "Ayer";
+
+  return date.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+}
+
 export function RecentTransactions({ summary }: { summary: MonthlySummary }) {
-  const recentItems = summary.recentTransactions.slice(0, 3);
+  const navigate = useNavigate();
+  const recentItems = summary.recentTransactions.slice(0, 5);
 
   return (
     <Card className="bg-card">
-      <CardHeader>
+      <CardHeader className="flex-row items-center justify-between space-y-0">
         <CardTitle>Últimos movimientos</CardTitle>
+        <button
+          type="button"
+          onClick={() => navigate("/transactions")}
+          className="text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Ver todos →
+        </button>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent>
         {recentItems.length ? (
-          recentItems.map((item) => (
-            <div key={item.id} className="flex items-center justify-between rounded-3xl bg-secondary/50 px-4 py-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: getCategoryTone(item.category).dot }} />
-                  <p className={`font-medium ${getCategoryTone(item.category).text}`}>{item.category}</p>
+          <div className="divide-y divide-white/[0.05]">
+            {recentItems.map((item) => {
+              const tone = getCategoryTone(item.category);
+              return (
+                <div key={item.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+                  <div
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+                    style={{ backgroundColor: `${tone.dot}22` }}
+                  >
+                    <span
+                      className="h-2.5 w-2.5 rounded-full"
+                      style={{ backgroundColor: tone.dot }}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium" style={{ color: tone.text }}>
+                      {item.category}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {item.description || "Sin descripción"}
+                      {item.date && (
+                        <>
+                          {" "}
+                          <span className="opacity-50">·</span>{" "}
+                          {formatTransactionDate(item.date)}
+                        </>
+                      )}
+                    </p>
+                  </div>
+                  <p
+                    className={`shrink-0 text-sm font-semibold tabular-nums ${
+                      item.type === "income" ? "text-emerald-400" : "text-foreground"
+                    }`}
+                  >
+                    {item.type === "income" ? "+" : "-"}
+                    {formatCurrency(item.amount)}
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground">{item.description || "Sin descripción"}</p>
-              </div>
-              <div className="text-right">
-                <Badge variant={item.type} className="mb-2">
-                  {item.type === "income" ? "Ingreso" : "Gasto"}
-                </Badge>
-                <p className="font-semibold">{formatCurrency(item.amount)}</p>
-              </div>
-            </div>
-          ))
+              );
+            })}
+          </div>
         ) : (
-          <div className="rounded-3xl bg-secondary/50 p-4 text-sm text-muted-foreground">
+          <div className="py-8 text-center text-sm text-muted-foreground">
             Aún no hay movimientos para este mes.
           </div>
         )}

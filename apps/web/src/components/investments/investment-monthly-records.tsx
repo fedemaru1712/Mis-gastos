@@ -2,7 +2,6 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import type { InvestmentPosition } from "@/domain";
 import { Pencil } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
@@ -34,9 +33,7 @@ export function InvestmentMonthlyRecords({
   return (
     <Card className="bg-card">
       <CardHeader className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <CardTitle>Registro mensual</CardTitle>
-        </div>
+        <CardTitle>Registro mensual</CardTitle>
         <div className="grid gap-2 sm:grid-cols-2 lg:flex">
           <Select value={year} onChange={(event) => onYearChange(event.target.value)} className="min-w-[9rem]">
             <option value="all">Todos los años</option>
@@ -61,91 +58,89 @@ export function InvestmentMonthlyRecords({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="hidden overflow-hidden rounded-[18px] bg-secondary/18 lg:block">
+        {/* Mobile: TR-style divider rows */}
+        <div className="divide-y divide-white/[0.05] lg:hidden">
+          {entries.map((entry) => {
+            const positive = entry.profitabilityAmount >= 0;
+            return (
+              <div key={entry.month} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium capitalize">{formatMonth(entry.month)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Aportación {formatCurrency(entry.contribution)}
+                  </p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="text-sm font-semibold tabular-nums">
+                    {formatCurrency(entry.endOfMonthValue)}
+                  </p>
+                  <p className={`text-xs font-medium tabular-nums ${positive ? "text-emerald-400" : "text-rose-400"}`}>
+                    {positive ? "+" : ""}{formatCurrency(entry.profitabilityAmount)}
+                    {" · "}
+                    {positive ? "+" : ""}{formatPercent(entry.profitabilityPercentage)}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onEditMonth(entry.month)}
+                  className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            );
+          })}
+          {entries.length === 0 && (
+            <p className="py-6 text-center text-sm text-muted-foreground">Sin registros para este periodo.</p>
+          )}
+        </div>
+
+        {/* Desktop: clean table */}
+        <div className="hidden overflow-hidden rounded-2xl bg-white/[0.03] lg:block">
           <table className="w-full text-sm">
-            <thead className="bg-secondary/35 text-left text-muted-foreground">
-              <tr>
+            <thead>
+              <tr className="bg-white/[0.04] text-left text-xs uppercase tracking-[0.12em] text-muted-foreground">
                 <th className="px-4 py-3 font-medium">Mes</th>
                 <th className="px-4 py-3 font-medium">Aportación</th>
                 <th className="px-4 py-3 font-medium">Valor final</th>
                 <th className="px-4 py-3 font-medium">Resultado</th>
                 <th className="px-4 py-3 font-medium">Rentabilidad</th>
-                <th className="px-4 py-3 font-medium">Acción</th>
+                <th className="px-4 py-3 font-medium" />
               </tr>
             </thead>
-            <tbody>
-              {entries.map((entry) => (
-                <tr key={entry.month}>
-                  <td className="px-4 py-3 capitalize">{formatMonth(entry.month)}</td>
-                  <td className="px-4 py-3">{formatCurrency(entry.contribution)}</td>
-                  <td className="px-4 py-3">{formatCurrency(entry.endOfMonthValue)}</td>
-                  <td
-                    className={
-                      entry.profitabilityAmount >= 0 ? "px-4 py-3 text-emerald-400" : "px-4 py-3 text-rose-400"
-                    }
-                  >
-                    {formatCurrency(entry.profitabilityAmount)}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge
-                      className={
-                        entry.profitabilityPercentage >= 0
-                          ? "bg-emerald-500/10 text-emerald-300"
-                          : "bg-rose-500/10 text-rose-300"
-                      }
-                    >
-                      {formatPercent(entry.profitabilityPercentage)}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Button variant="ghost" size="sm" onClick={() => onEditMonth(entry.month)}>
-                      Editar
-                    </Button>
+            <tbody className="divide-y divide-white/[0.04]">
+              {entries.map((entry) => {
+                const positive = entry.profitabilityAmount >= 0;
+                return (
+                  <tr key={entry.month} className="transition-colors hover:bg-white/[0.02]">
+                    <td className="px-4 py-3 font-medium capitalize">{formatMonth(entry.month)}</td>
+                    <td className="px-4 py-3 tabular-nums text-muted-foreground">
+                      {formatCurrency(entry.contribution)}
+                    </td>
+                    <td className="px-4 py-3 tabular-nums">{formatCurrency(entry.endOfMonthValue)}</td>
+                    <td className={`px-4 py-3 font-semibold tabular-nums ${positive ? "text-emerald-400" : "text-rose-400"}`}>
+                      {positive ? "+" : ""}{formatCurrency(entry.profitabilityAmount)}
+                    </td>
+                    <td className={`px-4 py-3 font-semibold tabular-nums ${positive ? "text-emerald-400" : "text-rose-400"}`}>
+                      {positive ? "+" : ""}{formatPercent(entry.profitabilityPercentage)}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <Button variant="ghost" size="sm" onClick={() => onEditMonth(entry.month)}>
+                        Editar
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
+              {entries.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                    Sin registros para este periodo.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
-        </div>
-        <div className="space-y-2 lg:hidden">
-          {entries.map((entry) => (
-            <div key={entry.month} className="rounded-[18px] bg-secondary/45 p-3.5">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-semibold capitalize">{formatMonth(entry.month)}</p>
-                  <p className="text-xs text-muted-foreground">Aportación {formatCurrency(entry.contribution)}</p>
-                </div>
-                <Badge
-                  className={
-                    entry.profitabilityPercentage >= 0
-                      ? "bg-emerald-500/10 text-emerald-300"
-                      : "bg-rose-500/10 text-rose-300"
-                  }
-                >
-                  {formatPercent(entry.profitabilityPercentage)}
-                </Badge>
-              </div>
-              <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <p className="text-xs text-muted-foreground">Valor final</p>
-                  <p className="font-semibold">{formatCurrency(entry.endOfMonthValue)}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Resultado</p>
-                  <p
-                    className={
-                      entry.profitabilityAmount >= 0 ? "font-semibold text-emerald-300" : "font-semibold text-rose-300"
-                    }
-                  >
-                    {formatCurrency(entry.profitabilityAmount)}
-                  </p>
-                </div>
-              </div>
-              <Button variant="ghost" className="mt-3 w-full" onClick={() => onEditMonth(entry.month)}>
-                Editar este registro
-              </Button>
-            </div>
-          ))}
         </div>
       </CardContent>
     </Card>

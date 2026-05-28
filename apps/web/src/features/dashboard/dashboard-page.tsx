@@ -7,7 +7,6 @@ import { ExpenseChart } from "@/components/dashboard/expense-chart";
 import { LoansSummaryCard } from "@/components/dashboard/loans-summary-card";
 import { MonthlyCashflowChart } from "@/components/dashboard/monthly-cashflow-chart";
 import { RecentTransactions } from "@/components/dashboard/recent-transactions";
-import { SummaryCards } from "@/components/dashboard/summary-cards";
 import { MonthPickerField } from "@/components/forms/month-picker-field";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -64,39 +63,42 @@ export function DashboardPage() {
           <CardContent className="p-4 sm:p-5">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Balance total del mes</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Balance del mes</p>
                 <p className="mt-2 text-[34px] font-semibold tracking-tight sm:text-[42px]">
                   {formatCurrency(monthlyQuery.data.balance)}
                 </p>
-                <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px] text-muted-foreground">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary/85 px-2.5 py-1">
-                    <ArrowUpRight className="h-4 w-4 text-emerald-300" />
-                    Ingresos {formatCurrency(monthlyQuery.data.income)}
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1">
+                    <ArrowUpRight className="h-3.5 w-3.5 text-emerald-400" />
+                    <span className="text-muted-foreground">Ingresos</span>
+                    <span className="font-medium text-emerald-400">{formatCurrency(monthlyQuery.data.income)}</span>
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary/85 px-2.5 py-1">
-                    <ArrowDownRight className="h-4 w-4 text-rose-300" />
-                    Gastos {formatCurrency(monthlyQuery.data.expense)}
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1">
+                    <ArrowDownRight className="h-3.5 w-3.5 text-rose-400" />
+                    <span className="text-muted-foreground">Gastos</span>
+                    <span className="font-medium text-foreground">{formatCurrency(monthlyQuery.data.expense)}</span>
                   </span>
                 </div>
               </div>
-              <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[380px] lg:max-w-[500px] lg:flex-1">
-                <div className="rounded-2xl bg-secondary/60 p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Ahorro del mes</p>
-                  <p className="mt-1.5 text-xl font-semibold">{formatPercent(monthSavingsRate)}</p>
+              <div className="grid grid-cols-3 gap-2 lg:min-w-[380px] lg:max-w-[500px] lg:flex-1">
+                <div className="rounded-2xl bg-white/[0.04] p-3">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Ahorro</p>
+                  <p className="mt-1.5 text-lg font-semibold">{formatPercent(monthSavingsRate)}</p>
                 </div>
-                <div className="rounded-2xl bg-secondary/60 p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Cartera</p>
-                  <p className="mt-1.5 text-xl font-semibold">{formatCurrency(totalPortfolio)}</p>
+                <div className="rounded-2xl bg-white/[0.04] p-3">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Cartera</p>
+                  <p className="mt-1.5 text-lg font-semibold">{formatCurrency(totalPortfolio)}</p>
                 </div>
-                <div className="rounded-2xl bg-secondary/60 p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Resultado inversión</p>
+                <div className="rounded-2xl bg-white/[0.04] p-3">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Inversión</p>
                   <p
                     className={
                       investmentProfitability !== null && investmentProfitability < 0
-                        ? "mt-1.5 text-xl font-semibold text-rose-300"
-                        : "mt-1.5 text-xl font-semibold text-emerald-300"
+                        ? "mt-1.5 text-lg font-semibold text-rose-400"
+                        : "mt-1.5 text-lg font-semibold text-emerald-400"
                     }
                   >
+                    {investmentProfitability !== null && investmentProfitability > 0 ? "+" : ""}
                     {formatCurrency(investmentProfitability ?? 0)}
                   </p>
                 </div>
@@ -104,7 +106,6 @@ export function DashboardPage() {
             </div>
           </CardContent>
         </Card>
-        <SummaryCards summary={monthlyQuery.data} investmentProfitability={investmentProfitability} />
         <AccountBalancesCard summary={monthlyQuery.data} />
         <div className="grid gap-4 xl:grid-cols-[1.35fr_0.65fr] xl:items-stretch">
           <MonthlyCashflowChart summary={monthlyQuery.data} />

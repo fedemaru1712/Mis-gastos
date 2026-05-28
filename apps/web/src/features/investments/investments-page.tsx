@@ -107,7 +107,7 @@ export function InvestmentsPage() {
           <h2 className="mt-1.5 text-[28px] font-semibold tracking-tight">Cartera</h2>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row">
-          <div className="grid grid-cols-2 gap-1 rounded-full bg-secondary/75 p-0.5">
+          <div className="grid grid-cols-2 gap-1 rounded-full bg-white/[0.06] p-0.5">
             <Button
               variant={period === "current" ? "default" : "ghost"}
               className="rounded-full"
@@ -152,41 +152,50 @@ export function InvestmentsPage() {
 
       {items.length > 0 && (
         <Card className="overflow-hidden bg-card">
-          <CardContent className="p-4">
-            <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Valor de cartera</p>
                 <p className="mt-2 text-[34px] font-semibold tracking-tight sm:text-[40px]">
                   {formatCurrency(portfolioValue)}
                 </p>
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <div
-                    className={
-                      portfolioPositive
-                        ? "inline-flex items-center gap-1.5 rounded-full bg-emerald-500/8 px-2.5 py-1 text-[13px] text-emerald-300"
-                        : "inline-flex items-center gap-1.5 rounded-full bg-rose-500/8 px-2.5 py-1 text-[13px] text-rose-300"
-                    }
-                  >
-                    {portfolioPositive ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
-                    {formatCurrency(portfolioProfitability)} · {formatPercent(portfolioPercentage)}
-                  </div>
-                  <div className="rounded-full bg-secondary/80 px-2.5 py-1 text-[13px] text-muted-foreground">
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1">
+                    {portfolioPositive ? (
+                      <ArrowUpRight className="h-3.5 w-3.5 text-emerald-400" />
+                    ) : (
+                      <ArrowDownRight className="h-3.5 w-3.5 text-rose-400" />
+                    )}
+                    <span className="text-muted-foreground">Resultado</span>
+                    <span className={`font-medium ${portfolioPositive ? "text-emerald-400" : "text-rose-400"}`}>
+                      {portfolioPositive ? "+" : ""}
+                      {formatCurrency(portfolioProfitability)} · {formatPercent(portfolioPercentage)}
+                    </span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1 text-muted-foreground">
                     Aportado {formatCurrency(portfolioContribution)}
-                  </div>
+                  </span>
                 </div>
               </div>
-              <div className="grid gap-2 sm:grid-cols-3 xl:grid-cols-1">
-                <div className="rounded-2xl bg-secondary/60 p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Posiciones</p>
-                  <p className="mt-1.5 text-xl font-semibold">{items.length}</p>
+              <div className="grid grid-cols-3 gap-2 xl:min-w-[340px] xl:max-w-[460px] xl:flex-1">
+                <div className="rounded-2xl bg-white/[0.04] p-3">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Posiciones</p>
+                  <p className="mt-1.5 text-lg font-semibold">{items.length}</p>
                 </div>
-                <div className="rounded-2xl bg-secondary/60 p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Mejor activo</p>
-                  <p className="mt-1.5 text-sm font-semibold">{topMovers[0]?.symbol || topMovers[0]?.name || "-"}</p>
+                <div className="rounded-2xl bg-white/[0.04] p-3">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Mejor activo</p>
+                  <p className="mt-1.5 truncate text-sm font-semibold">
+                    {topMovers[0]?.symbol || topMovers[0]?.name || "—"}
+                  </p>
                 </div>
-                <div className="rounded-2xl bg-secondary/60 p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Cierre seguido</p>
-                  <p className="mt-1.5 text-sm font-semibold">{summaryEntry?.month ?? "Sin registros"}</p>
+                <div className="rounded-2xl bg-white/[0.04] p-3">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Rentabilidad</p>
+                  <p
+                    className={`mt-1.5 text-lg font-semibold ${portfolioPositive ? "text-emerald-400" : "text-rose-400"}`}
+                  >
+                    {portfolioPositive ? "+" : ""}
+                    {formatPercent(portfolioPercentage)}
+                  </p>
                 </div>
               </div>
             </div>
@@ -233,7 +242,6 @@ export function InvestmentsPage() {
               <CardContent className="space-y-1 p-2">
                 {query.data.items.map((item) => {
                   const isActive = item.id === activePlan.id;
-
                   return (
                     <button
                       key={item.id}
@@ -255,23 +263,20 @@ export function InvestmentsPage() {
                         {(item.symbol || item.name).slice(0, 2).toUpperCase()}
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-medium text-white">
-                          {item.symbol || item.name}
-                        </span>
+                        <span className="block truncate text-sm font-medium">{item.symbol || item.name}</span>
                         <span className="block truncate text-xs text-muted-foreground">
                           {formatCurrency(item.currentValue)}
                         </span>
                       </span>
-                      <span className="text-right">
-                        <span className="block text-sm font-medium text-white">
+                      <span className="shrink-0 text-right">
+                        <span
+                          className={`block text-sm font-semibold tabular-nums ${item.profitabilityAmount >= 0 ? "text-emerald-400" : "text-rose-400"}`}
+                        >
+                          {item.profitabilityAmount >= 0 ? "+" : ""}
                           {formatCurrency(item.profitabilityAmount)}
                         </span>
                         <span
-                          className={
-                            item.profitabilityPercentage >= 0
-                              ? "block text-xs text-emerald-300"
-                              : "block text-xs text-rose-300"
-                          }
+                          className={`block text-xs tabular-nums ${item.profitabilityPercentage >= 0 ? "text-emerald-400/70" : "text-rose-400/70"}`}
                         >
                           {formatPercent(item.profitabilityPercentage)}
                         </span>
@@ -286,13 +291,11 @@ export function InvestmentsPage() {
           <Card className="overflow-hidden bg-card">
             <CardContent className="p-0">
               <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
-                <div className="space-y-6 p-6 md:p-8">
+                <div className="space-y-5 p-5 md:p-7">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                        Posición activa
-                      </p>
-                      <h3 className="mt-2 text-3xl font-semibold tracking-tight">{activePlan.name}</h3>
+                      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Posición activa</p>
+                      <h3 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">{activePlan.name}</h3>
                     </div>
                     <Badge
                       className={
@@ -302,84 +305,67 @@ export function InvestmentsPage() {
                       {summaryEntry?.month ?? (period === "current" ? "Sin cierre actual" : "Sin cierres")}
                     </Badge>
                   </div>
-                  <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                    <div className="rounded-2xl bg-white/[0.02] p-4">
-                      <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Total invertido</p>
-                      <p className="mt-2 text-3xl font-semibold tracking-tight">
+                  <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+                    <div className="rounded-2xl bg-white/[0.04] p-4">
+                      <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Total invertido</p>
+                      <p className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
                         {formatCurrency(summaryEntry?.totalInvested ?? 0)}
                       </p>
                     </div>
-                    <div className="rounded-2xl bg-white/[0.02] p-4">
-                      <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Valor actual</p>
-                      <p className="mt-2 text-3xl font-semibold tracking-tight">
+                    <div className="rounded-2xl bg-white/[0.04] p-4">
+                      <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Valor actual</p>
+                      <p className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
                         {formatCurrency(summaryEntry?.endOfMonthValue ?? 0)}
                       </p>
                     </div>
-                    <div className="rounded-2xl bg-white/[0.02] p-4">
-                      <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Ganancia / Perdida</p>
+                    <div className="rounded-2xl bg-white/[0.04] p-4">
+                      <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Ganancia / Pérdida</p>
                       <p
-                        className={
-                          summaryPositive
-                            ? "mt-2 text-3xl font-semibold tracking-tight text-emerald-300"
-                            : "mt-2 text-3xl font-semibold tracking-tight text-rose-300"
-                        }
+                        className={`mt-2 text-2xl font-semibold tracking-tight sm:text-3xl ${summaryPositive ? "text-emerald-400" : "text-rose-400"}`}
                       >
+                        {summaryPositive ? "+" : ""}
                         {formatCurrency(summaryEntry?.profitabilityAmount ?? 0)}
                       </p>
                     </div>
-                    <div className="rounded-2xl bg-white/[0.02] p-4">
-                      <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Rentabilidad</p>
+                    <div className="rounded-2xl bg-white/[0.04] p-4">
+                      <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Rentabilidad</p>
                       <p
-                        className={
-                          summaryPositive
-                            ? "mt-2 text-4xl font-semibold tracking-tight text-emerald-300"
-                            : "mt-2 text-4xl font-semibold tracking-tight text-rose-300"
-                        }
+                        className={`mt-2 text-3xl font-semibold tracking-tight sm:text-4xl ${summaryPositive ? "text-emerald-400" : "text-rose-400"}`}
                       >
+                        {summaryPositive ? "+" : ""}
                         {formatPercent(summaryEntry?.profitabilityPercentage ?? 0)}
                       </p>
                     </div>
                   </div>
                 </div>
-                <div
-                  className={
-                    summaryPositive
-                      ? "flex flex-col justify-between bg-white/[0.02] p-6 md:p-8"
-                      : "flex flex-col justify-between bg-white/[0.02] p-6 md:p-8"
-                  }
-                >
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Plan activo</span>
+                <div className="flex flex-col justify-between gap-5 border-t border-white/[0.05] p-5 md:p-7 lg:border-l lg:border-t-0">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Plan activo</span>
                     {summaryPositive ? (
-                      <TrendingUp className="h-5 w-5 text-emerald-300" />
+                      <TrendingUp className="h-5 w-5 text-emerald-400" />
                     ) : (
-                      <TrendingDown className="h-5 w-5 text-rose-300" />
+                      <TrendingDown className="h-5 w-5 text-rose-400" />
                     )}
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Broker</p>
-                    <p className="mt-1 text-2xl font-semibold">{activePlan.platform || "Sin broker indicado"}</p>
+                    <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Broker</p>
+                    <p className="mt-1.5 text-2xl font-semibold">{activePlan.platform || "Sin broker indicado"}</p>
                   </div>
-                  <div className="rounded-2xl bg-white/[0.02] p-4 text-sm">
+                  <div className="rounded-2xl bg-white/[0.04] p-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Último resultado</span>
+                      <span className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Último resultado</span>
                       {summaryPositive ? (
-                        <ArrowUpRight className="h-4 w-4 text-emerald-300" />
+                        <ArrowUpRight className="h-4 w-4 text-emerald-400" />
                       ) : (
-                        <ArrowDownRight className="h-4 w-4 text-rose-300" />
+                        <ArrowDownRight className="h-4 w-4 text-rose-400" />
                       )}
                     </div>
-                    <p
-                      className={
-                        summaryPositive
-                          ? "mt-3 text-2xl font-semibold text-emerald-300"
-                          : "mt-3 text-2xl font-semibold text-rose-300"
-                      }
-                    >
+                    <p className={`mt-3 text-2xl font-semibold ${summaryPositive ? "text-emerald-400" : "text-rose-400"}`}>
+                      {summaryPositive ? "+" : ""}
                       {formatCurrency(summaryEntry?.profitabilityAmount ?? 0)}
                     </p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Sobre un acumulado de {formatCurrency(summaryEntry?.totalInvested ?? 0)}
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Sobre {formatCurrency(summaryEntry?.totalInvested ?? 0)} invertidos
                     </p>
                   </div>
                 </div>
@@ -389,7 +375,7 @@ export function InvestmentsPage() {
 
           <InvestmentInsightsGrid entries={chartEntries} totalContributed={activePlan.totalContributed} />
 
-          <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
             <InvestmentProfitabilityChart
               entries={chartEntries}
               title={period === "current" ? "Últimos meses del plan activo" : "Evolución completa del plan"}
@@ -398,24 +384,27 @@ export function InvestmentsPage() {
               <CardHeader>
                 <CardTitle>Lectura rápida</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="rounded-3xl bg-secondary/45 p-4">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Plan mensual actual</p>
+              <CardContent className="space-y-3">
+                <div className="rounded-2xl bg-white/[0.04] p-4">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                    Última aportación mensual
+                  </p>
                   <p className="mt-2 text-2xl font-semibold">{formatCurrency(latestEntry?.contribution ?? 0)}</p>
                 </div>
-                <div className="rounded-3xl bg-secondary/45 p-4">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Valor total de cartera</p>
+                <div className="rounded-2xl bg-white/[0.04] p-4">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                    Valor actual del plan
+                  </p>
                   <p className="mt-2 text-2xl font-semibold">{formatCurrency(activePlan.currentValue)}</p>
                 </div>
-                <div className="rounded-3xl bg-secondary/45 p-4">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Rentabilidad acumulada</p>
+                <div className="rounded-2xl bg-white/[0.04] p-4">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                    Rentabilidad acumulada
+                  </p>
                   <p
-                    className={
-                      activePlan.profitabilityPercentage >= 0
-                        ? "mt-2 text-2xl font-semibold text-emerald-300"
-                        : "mt-2 text-2xl font-semibold text-rose-300"
-                    }
+                    className={`mt-2 text-2xl font-semibold ${activePlan.profitabilityPercentage >= 0 ? "text-emerald-400" : "text-rose-400"}`}
                   >
+                    {activePlan.profitabilityPercentage >= 0 ? "+" : ""}
                     {formatPercent(activePlan.profitabilityPercentage)}
                   </p>
                 </div>

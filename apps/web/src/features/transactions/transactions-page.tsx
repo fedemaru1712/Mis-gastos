@@ -53,10 +53,13 @@ export function TransactionsPage() {
     },
     onError: (error) => toast.error(error.message),
   });
+
   const items = query.data?.items ?? [];
   const expenseTotal = items.reduce((sum, item) => sum + (item.type === "expense" ? item.amount : 0), 0);
   const incomeTotal = items.reduce((sum, item) => sum + (item.type === "income" ? item.amount : 0), 0);
   const netTotal = incomeTotal - expenseTotal;
+  const incomeCount = items.filter((i) => i.type === "income").length;
+  const expenseCount = items.filter((i) => i.type === "expense").length;
 
   return (
     <section className="space-y-4">
@@ -71,34 +74,38 @@ export function TransactionsPage() {
       </div>
 
       <Card className="bg-card">
-        <CardContent className="p-4">
-          <div className="grid gap-3 lg:grid-cols-[1.2fr_0.8fr]">
+        <CardContent className="p-4 sm:p-5">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Flujo del periodo</p>
-              <p className="mt-2 text-[34px] font-semibold tracking-tight sm:text-[40px]">{formatCurrency(netTotal)}</p>
+              <p className="mt-2 text-[34px] font-semibold tracking-tight sm:text-[40px]">
+                {formatCurrency(netTotal)}
+              </p>
               <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/8 px-2.5 py-1 text-emerald-300">
-                  <ArrowUpRight className="h-4 w-4" />
-                  Ingresos {formatCurrency(incomeTotal)}
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1">
+                  <ArrowUpRight className="h-3.5 w-3.5 text-emerald-400" />
+                  <span className="text-muted-foreground">Ingresos</span>
+                  <span className="font-medium text-emerald-400">{formatCurrency(incomeTotal)}</span>
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/8 px-2.5 py-1 text-rose-300">
-                  <ArrowDownRight className="h-4 w-4" />
-                  Gastos {formatCurrency(expenseTotal)}
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1">
+                  <ArrowDownRight className="h-3.5 w-3.5 text-rose-400" />
+                  <span className="text-muted-foreground">Gastos</span>
+                  <span className="font-medium text-foreground">{formatCurrency(expenseTotal)}</span>
                 </span>
               </div>
             </div>
-            <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-              <div className="rounded-2xl bg-secondary/60 p-3">
-                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Registros</p>
-                <p className="mt-1.5 text-xl font-semibold">{items.length}</p>
+            <div className="grid grid-cols-3 gap-2 lg:min-w-[320px] lg:max-w-[440px] lg:flex-1">
+              <div className="rounded-2xl bg-white/[0.04] p-3">
+                <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Total</p>
+                <p className="mt-1.5 text-lg font-semibold">{items.length}</p>
               </div>
-              <div className="rounded-2xl bg-secondary/60 p-3">
-                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Pantalla gasto</p>
-                <p className="mt-1.5 text-sm font-semibold">{filters.type === "expense" ? "Activa" : "Filtrable"}</p>
+              <div className="rounded-2xl bg-white/[0.04] p-3">
+                <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Ingresos</p>
+                <p className="mt-1.5 text-lg font-semibold text-emerald-400">{incomeCount}</p>
               </div>
-              <div className="rounded-2xl bg-secondary/60 p-3">
-                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Pantalla ingreso</p>
-                <p className="mt-1.5 text-sm font-semibold">{filters.type === "income" ? "Activa" : "Filtrable"}</p>
+              <div className="rounded-2xl bg-white/[0.04] p-3">
+                <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Gastos</p>
+                <p className="mt-1.5 text-lg font-semibold">{expenseCount}</p>
               </div>
             </div>
           </div>
@@ -124,10 +131,8 @@ export function TransactionsPage() {
 
       <Card className="bg-card">
         <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <CardTitle>Actividad financiera</CardTitle>
-          </div>
-          <div className="grid grid-cols-3 gap-1 rounded-full bg-secondary/75 p-0.5">
+          <CardTitle>Actividad financiera</CardTitle>
+          <div className="grid grid-cols-3 gap-1 rounded-full bg-white/[0.06] p-0.5">
             <Button
               variant={filters.type === "all" ? "default" : "ghost"}
               size="sm"
@@ -156,7 +161,7 @@ export function TransactionsPage() {
           {query.isPending && <p className="text-sm text-muted-foreground">Cargando movimientos...</p>}
           {query.isError && <p className="text-sm text-danger">{query.error.message}</p>}
           {query.data && query.data.items.length === 0 && (
-            <div className="rounded-3xl bg-secondary/50 p-6 text-sm text-muted-foreground">
+            <div className="rounded-2xl bg-white/[0.04] p-8 text-center text-sm text-muted-foreground">
               No hay movimientos para estos filtros.
             </div>
           )}
@@ -172,6 +177,7 @@ export function TransactionsPage() {
           )}
         </CardContent>
       </Card>
+
       <TransactionFormDialog
         open={open}
         transaction={selected}

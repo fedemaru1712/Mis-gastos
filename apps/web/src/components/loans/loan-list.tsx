@@ -21,128 +21,110 @@ export function LoanList({ loans, activeLoanId, onSelect, onEdit, onAddPayment, 
     <Card className="bg-card">
       <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <CardTitle>Listado de préstamos</CardTitle>
-          <CardDescription>
-            Consulta el estado de cada préstamo y entra en su detalle para gestionar pagos.
-          </CardDescription>
+          <CardTitle>Préstamos</CardTitle>
+          <CardDescription>Selecciona un préstamo para ver su detalle y gestionar pagos.</CardDescription>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {loans.map((loan) => {
-            const isActive = loan.id === activeLoanId;
+      <CardContent className="space-y-2">
+        {loans.map((loan) => {
+          const isActive = loan.id === activeLoanId;
 
-            return (
-              <div
-                key={loan.id}
-                role="button"
-                tabIndex={0}
-                onClick={() => onSelect(loan.id)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    onSelect(loan.id);
-                  }
-                }}
-                className={cn(
-                  "w-full rounded-3xl bg-secondary/35 p-4 text-left transition hover:bg-secondary/45",
-                  isActive && "bg-secondary/55",
-                )}
-              >
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start gap-3">
-                        <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-card text-primary">
-                          <Landmark className="h-5 w-5" />
-                        </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="truncate text-lg font-semibold">{loan.name}</p>
-                          <Badge
-                            className={
-                              loan.status === "paid"
-                                ? "bg-emerald-500/10 text-emerald-300"
-                                : "bg-amber-500/10 text-amber-200"
-                            }
-                          >
-                            {loan.status === "paid" ? "Pagado" : "Activo"}
-                          </Badge>
-                        </div>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          Cuota habitual {formatCurrency(loan.monthlyPayment)} · Día {loan.paymentDay}
-                        </p>
-                      </div>
+          return (
+            <div
+              key={loan.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => onSelect(loan.id)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  onSelect(loan.id);
+                }
+              }}
+              className={cn(
+                "w-full rounded-2xl bg-white/[0.04] p-4 text-left transition-colors hover:bg-white/[0.06]",
+                isActive && "bg-white/[0.07] ring-1 ring-white/[0.10]",
+              )}
+            >
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.06]">
+                  <Landmark className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-base font-semibold">{loan.name}</p>
+                      <Badge
+                        className={
+                          loan.status === "paid"
+                            ? "bg-emerald-500/10 text-emerald-300"
+                            : "bg-amber-500/10 text-amber-200"
+                        }
+                      >
+                        {loan.status === "paid" ? "Pagado" : "Activo"}
+                      </Badge>
                     </div>
-                    <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-muted-foreground">Inicial</p>
-                        <p className="mt-1 font-semibold">{formatCurrency(loan.initialAmount)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-muted-foreground">Pendiente</p>
-                        <p className="mt-1 font-semibold">{formatCurrency(loan.remainingAmount)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-muted-foreground">Pagado</p>
-                        <p className="mt-1 font-semibold">{formatCurrency(loan.totalPaid)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-muted-foreground">Pagos</p>
-                        <p className="mt-1 font-semibold">{loan.paymentsCount}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-muted-foreground">Amortizado</p>
-                        <p className="mt-1 font-semibold">{formatPercent(loan.progressPercentage)}</p>
-                      </div>
-                    </div>
-                    <div className="mt-4 space-y-2">
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>Progreso del préstamo</span>
-                        <span>{formatPercent(loan.progressPercentage)}</span>
-                      </div>
-                      <Progress
-                        value={loan.progressPercentage}
-                         indicatorClassName={loan.status === "paid" ? "bg-emerald-300" : undefined}
-                       />
+                    <div className="flex items-center gap-0.5">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        title="Registrar pago"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onAddPayment(loan);
+                        }}
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        title="Editar préstamo"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEdit(loan);
+                        }}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-danger"
+                        title="Eliminar préstamo"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(loan);
+                        }}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
-                    <Button
-                      variant="outline"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        onAddPayment(loan);
-                      }}
-                    >
-                      <Plus className="h-4 w-4" />
-                      Pago
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        onEdit(loan);
-                      }}
-                    >
-                      <Pencil className="h-4 w-4" />
-                      Editar
-                    </Button>
-                    <Button
-                      variant="danger"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        onDelete(loan);
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      Eliminar
-                    </Button>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    Cuota {formatCurrency(loan.monthlyPayment)} · Día {loan.paymentDay}
+                  </p>
+                  <div className="mt-3 space-y-1.5">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span>{formatCurrency(loan.totalPaid)} pagados</span>
+                      <span>{formatPercent(loan.progressPercentage)}</span>
+                    </div>
+                    <Progress
+                      value={loan.progressPercentage}
+                      indicatorClassName={loan.status === "paid" ? "bg-emerald-400" : undefined}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {formatCurrency(loan.remainingAmount)} pendientes de{" "}
+                      {formatCurrency(loan.initialAmount)}
+                    </p>
                   </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </CardContent>
     </Card>
   );

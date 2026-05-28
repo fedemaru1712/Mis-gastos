@@ -8,7 +8,6 @@ import { LoanPaymentDialog } from "@/components/forms/loan-payment-dialog";
 import { LoanDetailPanel } from "@/components/loans/loan-detail-panel";
 import { LoanList } from "@/components/loans/loan-list";
 import { LoanPaymentHistory } from "@/components/loans/loan-payment-history";
-import { LoanSummaryCards } from "@/components/loans/loan-summary-cards";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLoanPaymentsQuery, useLoansQuery } from "@/hooks/use-loans";
@@ -119,30 +118,35 @@ export function LoansPage() {
 
       {loans.length > 0 && (
         <Card className="bg-card">
-          <CardContent className="p-4">
-            <div className="grid gap-3 lg:grid-cols-[1.2fr_0.8fr]">
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Pendiente total</p>
                 <p className="mt-2 text-[34px] font-semibold tracking-tight sm:text-[40px]">
                   {formatCurrency(totalRemaining)}
                 </p>
-                <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-secondary/80 px-2.5 py-1 text-[13px] text-muted-foreground">
-                  <Landmark className="h-4 w-4 text-primary" />
-                  Cuotas activas {formatCurrency(totalMonthly)}
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1">
+                    <Landmark className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="text-muted-foreground">Cuotas activas</span>
+                    <span className="font-medium text-foreground">{formatCurrency(totalMonthly)}</span>
+                  </span>
                 </div>
               </div>
-              <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-                <div className="rounded-2xl bg-secondary/60 p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Préstamos</p>
-                  <p className="mt-1.5 text-xl font-semibold">{loans.length}</p>
+              <div className="grid grid-cols-3 gap-2 lg:min-w-[320px] lg:max-w-[440px] lg:flex-1">
+                <div className="rounded-2xl bg-white/[0.04] p-3">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Total</p>
+                  <p className="mt-1.5 text-lg font-semibold">{loans.length}</p>
                 </div>
-                <div className="rounded-2xl bg-secondary/60 p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Avance medio</p>
-                  <p className="mt-1.5 text-xl font-semibold">{formatPercent(averageProgress)}</p>
+                <div className="rounded-2xl bg-white/[0.04] p-3">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Activos</p>
+                  <p className="mt-1.5 text-lg font-semibold">
+                    {loans.filter((l) => l.status === "active").length}
+                  </p>
                 </div>
-                <div className="rounded-2xl bg-secondary/60 p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Préstamo activo</p>
-                  <p className="mt-1.5 text-sm font-semibold">{activeLoan?.name ?? "Selecciona uno"}</p>
+                <div className="rounded-2xl bg-white/[0.04] p-3">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Avance</p>
+                  <p className="mt-1.5 text-lg font-semibold">{formatPercent(averageProgress)}</p>
                 </div>
               </div>
             </div>
@@ -184,40 +188,37 @@ export function LoansPage() {
 
       {loans.length > 0 && (
         <>
-          <LoanSummaryCards loans={loans} />
-          <div className="grid gap-6 xl:grid-cols-1">
-            {activeLoan && (
-              <LoanDetailPanel
-                loan={activeLoan}
-                onEdit={() => {
-                  setSelectedLoan(activeLoan);
-                  setLoanDialogOpen(true);
-                }}
-                onAddPayment={() => {
-                  setSelectedLoan(activeLoan);
-                  setSelectedPayment(null);
-                  setPaymentDialogOpen(true);
-                }}
-              />
-            )}
-            <LoanList
-              loans={loans}
-              activeLoanId={activeLoan?.id}
-              onSelect={setActiveLoanId}
-              onEdit={(loan) => {
-                setActiveLoanId(loan.id);
-                setSelectedLoan(loan);
+          {activeLoan && (
+            <LoanDetailPanel
+              loan={activeLoan}
+              onEdit={() => {
+                setSelectedLoan(activeLoan);
                 setLoanDialogOpen(true);
               }}
-              onAddPayment={(loan) => {
-                setActiveLoanId(loan.id);
-                setSelectedLoan(loan);
+              onAddPayment={() => {
+                setSelectedLoan(activeLoan);
                 setSelectedPayment(null);
                 setPaymentDialogOpen(true);
               }}
-              onDelete={(loan) => deleteLoanMutation.mutate(loan)}
             />
-          </div>
+          )}
+          <LoanList
+            loans={loans}
+            activeLoanId={activeLoan?.id}
+            onSelect={setActiveLoanId}
+            onEdit={(loan) => {
+              setActiveLoanId(loan.id);
+              setSelectedLoan(loan);
+              setLoanDialogOpen(true);
+            }}
+            onAddPayment={(loan) => {
+              setActiveLoanId(loan.id);
+              setSelectedLoan(loan);
+              setSelectedPayment(null);
+              setPaymentDialogOpen(true);
+            }}
+            onDelete={(loan) => deleteLoanMutation.mutate(loan)}
+          />
           {activeLoan && (
             <>
               {paymentsQuery.isPending && (
