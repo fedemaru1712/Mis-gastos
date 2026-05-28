@@ -5,7 +5,7 @@ import { formatCurrency } from "@/lib/format";
 import { getCategoryTone } from "@/lib/category-colors";
 
 function formatTransactionDate(dateString: string): string {
-  const [year, month, day] = dateString.split("-").map(Number);
+  const [year, month, day] = dateString.slice(0, 10).split("-").map(Number);
   const date = new Date(year, month - 1, day);
 
   const today = new Date();

@@ -22,7 +22,7 @@ interface Props {
 }
 
 function formatDate(dateString: string) {
-  const [y, m, d] = dateString.split("-").map(Number);
+  const [y, m, d] = dateString.slice(0, 10).split("-").map(Number);
   return new Date(y, m - 1, d).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
 }
 
